@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+venv/
+env/
+ENV/
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Serverless
+.serverless/
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+/tmp/
+*.log
+*.tmp
+*.bak
+
+# Cloud credentials
+credentials.json
+*-credentials.json
+.aws/
+.gcloud/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Analytics and ML models
+*.h5
+*.pkl
+*.joblib
+models/
+checkpoints/
+
+# Assets temporários
+assets/tmp/
