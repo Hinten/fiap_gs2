@@ -1,0 +1,42 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+python-multipart==0.0.6
+
+# GitHub integration
+PyGithub==2.1.1
+requests==2.31.0
+
+# AI and LLM
+crewai==0.1.26
+langchain==0.1.0
+openai==1.3.7
+anthropic==0.7.7
+
+# Code analysis tools
+pylint==3.0.3
+flake8==6.1.0
+mypy==1.7.1
+bandit==1.7.5
+radon==6.0.1
+
+# NLP and similarity
+transformers==4.36.0
+torch==2.1.1
+scikit-learn==1.3.2
+sentence-transformers==2.2.2
+
+# Database
+boto3==1.29.7
+aioboto3==12.0.0
+
+# Utilities
+python-jose[cryptography]==3.3.0
+python-dotenv==1.0.0
+httpx==0.25.2
+aiohttp==3.9.1
+
+# Logging and monitoring
+structlog==23.2.0
