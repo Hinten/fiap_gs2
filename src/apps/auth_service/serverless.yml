@@ -1,0 +1,131 @@
+service: symbiowork-auth
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  
+  environment:
+    JWT_SECRET_KEY: ${env:JWT_SECRET_KEY}
+    JWT_ALGORITHM: ${env:JWT_ALGORITHM, 'HS256'}
+    ACCESS_TOKEN_EXPIRE_MINUTES: ${env:ACCESS_TOKEN_EXPIRE_MINUTES, '30'}
+    REFRESH_TOKEN_EXPIRE_DAYS: ${env:REFRESH_TOKEN_EXPIRE_DAYS, '7'}
+    DYNAMODB_TABLE_USERS: ${self:service}-users-${self:provider.stage}
+    DYNAMODB_TABLE_REFRESH_TOKENS: ${self:service}-refresh-tokens-${self:provider.stage}
+    AWS_REGION: ${self:provider.region}
+    ENVIRONMENT: ${self:provider.stage}
+    APP_NAME: "SymbioWork Auth Service"
+    CORS_ORIGINS: ${env:CORS_ORIGINS, 'http://localhost:3000,http://localhost:8080'}
+  
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-users-${self:provider.stage}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-users-${self:provider.stage}/index/*"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-refresh-tokens-${self:provider.stage}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-refresh-tokens-${self:provider.stage}/index/*"
+
+functions:
+  api:
+    handler: src.main.handler
+    timeout: 30
+    memorySize: 512
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-users-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: user_id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: user_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: email-index
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+          - Key: Service
+            Value: auth
+    
+    RefreshTokensTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-refresh-tokens-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: token_id
+            AttributeType: S
+          - AttributeName: user_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: token_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: user_id-index
+            KeySchema:
+              - AttributeName: user_id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        TimeToLiveSpecification:
+          AttributeName: expires_at
+          Enabled: true
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+          - Key: Service
+            Value: auth
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer: true
+    zip: true
+    slim: true
+    strip: false
+    noDeploy:
+      - boto3
+      - botocore
