@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api import routes, github_routes
+from .api import routes, github_routes, plagiarism_routes
 from .utils.config import settings
 
 # Create FastAPI app
@@ -32,6 +32,11 @@ app.include_router(
     github_routes.router,
     prefix=f"{settings.api_v1_prefix}/github",
     tags=["github"]
+)
+app.include_router(
+    plagiarism_routes.router,
+    prefix=f"{settings.api_v1_prefix}/plagiarism",
+    tags=["plagiarism"]
 )
 
 

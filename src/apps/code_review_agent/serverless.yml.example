@@ -1,0 +1,84 @@
+# Serverless Framework Configuration for Code Review Agent
+# This is an example configuration for deploying to AWS Lambda
+
+service: code-review-agent
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  
+  # Environment variables
+  environment:
+    DYNAMODB_TABLE_REVIEWS: ${self:service}-${self:provider.stage}-reviews
+    DYNAMODB_TABLE_PLAGIARISM: ${self:service}-${self:provider.stage}-plagiarism
+    AWS_REGION: ${self:provider.region}
+    # Add secrets via AWS Secrets Manager or SSM Parameter Store
+    # GITHUB_TOKEN: ${ssm:/code-review-agent/github-token}
+    # OPENAI_API_KEY: ${ssm:/code-review-agent/openai-key}
+  
+  # IAM permissions
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_REVIEWS}"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_PLAGIARISM}"
+
+functions:
+  api:
+    handler: lambda_handler.handler
+    timeout: 300  # 5 minutes
+    memorySize: 1024
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+      - http:
+          path: /
+          method: ANY
+          cors: true
+
+resources:
+  Resources:
+    ReviewsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_REVIEWS}
+        AttributeDefinitions:
+          - AttributeName: review_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: review_id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    
+    PlagiarismTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE_PLAGIARISM}
+        AttributeDefinitions:
+          - AttributeName: report_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: report_id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer: true
+    slim: true
+    strip: false
