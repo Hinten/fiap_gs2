@@ -82,7 +82,9 @@ def verify_custom_claims(user: AuthUser, required_claims: Dict[str, Any]) -> boo
     return True
 
 
-def create_custom_token(uid: str, additional_claims: Optional[Dict[str, Any]] = None) -> str:
+def create_custom_token(
+    uid: str, additional_claims: Optional[Dict[str, Any]] = None
+) -> str:
     """
     Create a custom Firebase token for a user.
 

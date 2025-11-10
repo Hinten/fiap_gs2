@@ -41,9 +41,7 @@ def test_firebase_config_model():
 def test_token_response_model():
     """Test TokenResponse model."""
     user = AuthUser(uid="user123", email="user@example.com")
-    response = TokenResponse(
-        id_token="test-token", expires_in=3600, user=user
-    )
+    response = TokenResponse(id_token="test-token", expires_in=3600, user=user)
     assert response.id_token == "test-token"
     assert response.expires_in == 3600
     assert response.user.uid == "user123"

@@ -25,4 +25,5 @@ def test_firebase_config_optional_fields():
     )
     assert config.firebase_project_id == "test-project"
     assert config.firebase_database_url == "https://test.firebaseio.com"
-    assert config.firebase_service_account_json is None
+    # Service account JSON defaults to empty string from environment
+    assert config.firebase_service_account_json == ""

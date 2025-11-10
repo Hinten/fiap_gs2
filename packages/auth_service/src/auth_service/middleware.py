@@ -72,7 +72,20 @@ async def verify_firebase_token(
             custom_claims={
                 k: v
                 for k, v in decoded_token.items()
-                if k not in ["uid", "email", "email_verified", "name", "picture", "phone_number", "role", "tenant_id", "iat", "exp", "auth_time"]
+                if k
+                not in [
+                    "uid",
+                    "email",
+                    "email_verified",
+                    "name",
+                    "picture",
+                    "phone_number",
+                    "role",
+                    "tenant_id",
+                    "iat",
+                    "exp",
+                    "auth_time",
+                ]
             },
             issued_at=decoded_token.get("iat"),
             expires_at=decoded_token.get("exp"),

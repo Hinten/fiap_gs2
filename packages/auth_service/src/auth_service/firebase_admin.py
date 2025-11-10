@@ -12,7 +12,7 @@ from typing import Optional
 
 import firebase_admin
 from firebase_admin import auth, credentials
-from pydantic import Field
+from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 logger = logging.getLogger(__name__)
@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 class FirebaseConfig(BaseSettings):
     """Firebase configuration from environment variables."""
+
+    model_config = ConfigDict(env_file=".env", case_sensitive=False)
 
     firebase_project_id: str = Field(
         ...,
@@ -37,10 +39,6 @@ class FirebaseConfig(BaseSettings):
         None,
         description="Firebase Realtime Database URL",
     )
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
 
 
 _firebase_app: Optional[firebase_admin.App] = None

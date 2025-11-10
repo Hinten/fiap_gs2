@@ -8,7 +8,6 @@ from typing import Generator
 import pytest
 from fastapi.testclient import TestClient
 
-
 # Set test environment variables before importing auth_service
 os.environ["FIREBASE_PROJECT_ID"] = "test-project"
 os.environ["FIREBASE_SERVICE_ACCOUNT_JSON"] = ""
