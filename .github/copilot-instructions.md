@@ -143,16 +143,16 @@ cd packages_dashboard/<package_name>
 
 # Setup (always first)
 flutter pub get
+```
 
-# Testing
-flutter test                    # Unit/widget tests
-flutter analyze                 # Static analysis
-flutter format .                # Format code
+Note (environment): The Flutter SDK is already installed in the current development environment. Agents and developers can verify the installation and environment with the following Windows (cmd.exe) commands:
 
-# Running (for apps)
-flutter devices                 # List available devices
-flutter run -d chrome           # Run on Chrome
-flutter run -d <device-id>      # Run on specific device
+```cmd
+REM Show Flutter version
+flutter --version
+
+REM Run Flutter doctor for diagnostics
+flutter doctor -v
 ```
 
 **Installing Multiple Packages**:
