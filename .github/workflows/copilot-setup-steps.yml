@@ -267,6 +267,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Check Flutter Version
+        run: flutter --version
+
+      - name: Check Python Version
+        run: python --version
+
+      - name: Check npm Version
+        run: npm --version
+
+      - name: Check Java Version
+        run: java -version
+
+      - name: Display Firebase Emulator Status
+        run: |
+          echo "Displaying Firebase Emulator log tail..."
+          if [ -f "emulators.log" ]; then
+            tail -n 50 emulators.log
+          else
+            echo "⚠️ emulators.log not found"
+          fi
       
       - name: Generate build summary
         run: |
