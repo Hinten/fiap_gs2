@@ -10,8 +10,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Python lib directories (but not Flutter lib/)
+**/packages/*/lib/
+**/packages/*/lib64/
 parts/
 sdist/
 var/
@@ -72,11 +73,13 @@ credentials.json
 .RData
 .Rproj.user/
 
-# Analytics and ML models
+# Analytics and ML models (but not source code models/)
 *.h5
 *.pkl
 *.joblib
-models/
+**/models/*.h5
+**/models/*.pkl
+**/models/*.joblib
 checkpoints/
 
 # Assets temporários
