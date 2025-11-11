@@ -44,7 +44,7 @@ jobs:
           fi
           # Instalar pacotes Python em modo editável
           for package in packages/*/; do
-            if [ -f "$package/pyproject.toml" ]; then
+            if [ -f "$package/pyproject.toml" ] && [ -d "$package/src" ]; then
               cd "$package"
               pip install -e ".[dev]"
               cd ../..
