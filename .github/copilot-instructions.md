@@ -242,6 +242,65 @@ dependencies:
 - Test file naming: `test_<module_name>.py` or `<widget>_test.dart`
 - **All tests must be created and run before finalizing pull requests**
 
+#### Firebase & Cloud Functions emulator usage
+
+All tests that interact with Firebase services (Authentication, Firestore, Realtime Database, Storage, Functions, etc.) MUST run against the Firebase Emulator Suite (local or CI). Never run test suites against production Firebase projects.
+
+Microservices implemented as Cloud Functions must be tested using the Cloud Functions emulator (part of the Firebase Emulator Suite) for integration/end-to-end tests. Start the emulators and run tests in the same runner/job so the tests can reach the local emulators.
+
+Key guidelines:
+- Use the emulator for unit/integration tests that require I/O with Firebase services.
+- Run the emulators locally for developer testing and in CI jobs that require Firebase interaction.
+- Always use a dedicated `project-id` for emulated tests (for example `test-project`) and do not reuse production project IDs.
+- Ensure CI jobs that start emulators run tests in the same job (runners can't share running background processes across jobs).
+
+Example (Windows cmd - interactive):
+
+```cmd
+REM Install firebase-tools (one-time)
+npm install -g firebase-tools@latest
+
+REM Start emulators (interactive) - keep this terminal open while you run tests
+firebase emulators:start --only auth,firestore,functions,storage,database --project test-project
+
+REM In a separate terminal run your tests (pytest or npm test)
+pytest
+```
+
+Example (bash / CI runner):
+
+```bash
+# Install firebase-tools
+npm install -g firebase-tools@latest
+
+# Start emulators in background and capture logs (Linux runners)
+nohup firebase emulators:start --only auth,firestore,functions,storage,database --project test-project > emulators.log 2>&1 &
+echo $! > emulators.pid
+
+# Wait/health-check loop (basic)
+for i in $(seq 1 60); do
+  if grep -i "All emulators" emulators.log >/dev/null 2>&1 || grep -i "emulators started" emulators.log >/dev/null 2>&1; then
+    echo "Emulators ready"
+    break
+  fi
+  sleep 1
+done
+
+# Run your tests while emulators are running
+pytest
+
+# Optionally stop emulators at the end of the job
+kill $(cat emulators.pid) || true
+```
+
+CI notes:
+- In GitHub Actions, start the Firebase emulators inside the job before running tests and run tests in the same job (see `jobs.<job_id>.steps` in workflows). Do not attempt to start emulators in one job and use them in another.
+- If you prefer an action to manage the emulator lifecycle, prefer a maintained action; otherwise start `firebase-tools` directly as shown above.
+
+Security and data handling:
+- Use seeded test data and clear or reinitialize emulator state between test runs when appropriate.
+- Do not commit test credentials or secrets; use environment variables and GitHub Secrets for CI if necessary.
+
 ### CI/CD and Validation (To Be Implemented)
 
 **No GitHub Actions workflows exist yet**. When creating `.github/workflows/`:
