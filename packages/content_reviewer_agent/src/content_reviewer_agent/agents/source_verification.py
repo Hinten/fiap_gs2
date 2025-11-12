@@ -1,10 +1,8 @@
-"""Source verification agent."""
+"""Source verification agent using Google AI."""
 
-import re
 from typing import List
-from urllib.parse import urlparse
 
-from content_reviewer_agent.agents.base import BaseReviewAgent
+from content_reviewer_agent.agents.base_ai import BaseAIAgent
 from content_reviewer_agent.models.content import (
     Content,
     IssueSeverity,
@@ -13,179 +11,112 @@ from content_reviewer_agent.models.content import (
 )
 
 
-class SourceVerificationAgent(BaseReviewAgent):
-    """Agent that verifies sources and references in content."""
+class SourceVerificationAgent(BaseAIAgent):
+    """Agent that verifies sources and references using AI."""
+
+    SYSTEM_PROMPT = """You are an expert fact-checker and academic research assistant. Your task is to analyze educational content for source verification issues.
+
+Focus on:
+1. Claims that require citations but lack them
+2. Quoted material without attribution
+3. Statistics or data without source references
+4. Potentially unreliable or unverified sources
+5. Missing references for factual statements
+6. Outdated or broken reference links
+
+For each issue, provide:
+{
+    "type": "source",
+    "severity": "critical|high|medium|low",
+    "description": "Description of the source issue",
+    "original_text": "The text that needs citation/verification",
+    "suggested_fix": "Suggestion for improvement (e.g., 'Add citation', 'Verify source')",
+    "sources": ["Suggested trusted sources if applicable"],
+    "confidence": 0.85
+}
+
+Return a JSON array of issues. Be thorough but reasonable - not every statement needs a citation."""
 
     def __init__(self):
         """Initialize the source verification agent."""
         super().__init__(
             name="Source Verification Agent",
             description="Verifies sources, citations, and references in content",
+            system_prompt=self.SYSTEM_PROMPT,
         )
 
-        # Trusted domains for verification
-        self.trusted_domains = [
-            "wikipedia.org",
-            "github.com",
-            "stackoverflow.com",
-            "python.org",
-            "docs.python.org",
-            "mozilla.org",
-            "w3.org",
-            "ieee.org",
-            "acm.org",
-            "arxiv.org",
-            "scholar.google.com",
-        ]
-
-    async def review(self, content: Content) -> List[ReviewIssue]:
-        """Review content sources and citations.
+    def get_review_prompt(self, content: Content) -> str:
+        """Generate the review prompt for source verification.
 
         Args:
             content: Content to review
 
         Returns:
-            List of source-related issues
+            Prompt string for the AI model
         """
-        issues = []
+        return f"""Please analyze the following content for source verification issues:
 
-        # Extract and verify URLs
-        issues.extend(self._check_urls(content))
+Title: {content.title}
+Content Type: {content.content_type.value}
+{f"Discipline: {content.discipline}" if content.discipline else ""}
+Text:
+{content.text}
 
-        # Check for missing citations
-        issues.extend(self._check_citations(content))
+Identify claims, statistics, or statements that need citations or have questionable sources. Return your findings as a JSON array."""
 
-        # Check for suspicious claims without sources
-        issues.extend(self._check_unsupported_claims(content))
-
-        return issues
-
-    def _check_urls(self, content: Content) -> List[ReviewIssue]:
-        """Check URLs in content.
+    def parse_ai_response(
+        self, response_text: str, content: Content
+    ) -> List[ReviewIssue]:
+        """Parse AI response into ReviewIssue objects.
 
         Args:
-            content: Content to check
+            response_text: Response from the AI model
+            content: Original content being reviewed
 
         Returns:
-            List of URL-related issues
+            List of ReviewIssue objects
         """
         issues = []
 
-        # Find all URLs
-        url_pattern = r"https?://[^\s<>\"\'\)\\]+"
-        urls = re.findall(url_pattern, content.text)
+        # Parse JSON response
+        parsed = self.parse_json_response(response_text)
+        if not parsed:
+            return issues
 
-        for url in urls:
-            parsed = urlparse(url)
-            domain = parsed.netloc.lower()
+        # Handle both single dict and list of dicts
+        issue_list = parsed if isinstance(parsed, list) else [parsed]
 
-            # Check if domain is trusted
-            is_trusted = any(trusted in domain for trusted in self.trusted_domains)
+        for item in issue_list:
+            try:
+                severity_map = {
+                    "critical": IssueSeverity.CRITICAL,
+                    "high": IssueSeverity.HIGH,
+                    "medium": IssueSeverity.MEDIUM,
+                    "low": IssueSeverity.LOW,
+                }
 
-            if not is_trusted:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.SOURCE,
-                        severity=IssueSeverity.MEDIUM,
-                        description=f"Unverified source: {domain}. Consider using trusted references.",
-                        original_text=url,
-                        sources=[url],
-                        confidence=0.70,
-                    )
+                severity = severity_map.get(
+                    item.get("severity", "").lower(), IssueSeverity.MEDIUM
                 )
 
-            # Check for broken URL patterns (basic validation)
-            if not parsed.scheme or not parsed.netloc:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.SOURCE,
-                        severity=IssueSeverity.HIGH,
-                        description="Malformed URL detected",
-                        original_text=url,
-                        confidence=0.90,
-                    )
-                )
+                sources = item.get("sources", [])
+                if isinstance(sources, str):
+                    sources = [sources]
 
-        return issues
-
-    def _check_citations(self, content: Content) -> List[ReviewIssue]:
-        """Check for proper citations.
-
-        Args:
-            content: Content to check
-
-        Returns:
-            List of citation issues
-        """
-        issues = []
-
-        # Look for citation patterns like [1], (Author, Year)
-        has_citations = bool(
-            re.search(r"\[\d+\]|\([A-Z][a-z]+,\s*\d{4}\)", content.text)
-        )
-
-        # Look for quoted text without attribution
-        quotes = re.findall(r'"([^"]{50,})"', content.text)
-        if quotes and not has_citations:
-            issues.append(
-                ReviewIssue(
-                    content_id=content.content_id,
+                issue = self.create_issue(
+                    content=content,
                     issue_type=IssueType.SOURCE,
-                    severity=IssueSeverity.MEDIUM,
-                    description="Found quoted text without clear citation or source attribution",
-                    confidence=0.75,
+                    severity=severity,
+                    description=item.get("description", ""),
+                    original_text=item.get("original_text"),
+                    suggested_fix=item.get("suggested_fix"),
+                    sources=sources,
+                    confidence=float(item.get("confidence", 0.75)),
                 )
-            )
+                issues.append(issue)
 
-        return issues
-
-    def _check_unsupported_claims(self, content: Content) -> List[ReviewIssue]:
-        """Check for claims that should have sources.
-
-        Args:
-            content: Content to check
-
-        Returns:
-            List of issues with unsupported claims
-        """
-        issues = []
-
-        # Patterns that often indicate claims needing sources
-        claim_patterns = [
-            r"research shows",
-            r"studies have shown",
-            r"according to",
-            r"statistics show",
-            r"\d+%\s+of",
-            r"it has been proven",
-            r"experts say",
-        ]
-
-        text_lower = content.text.lower()
-        for pattern in claim_patterns:
-            matches = re.finditer(pattern, text_lower)
-            for match in matches:
-                # Get surrounding context
-                start = max(0, match.start() - 50)
-                end = min(len(content.text), match.end() + 100)
-                context = content.text[start:end]
-
-                # Check if there's a nearby citation
-                has_nearby_citation = bool(re.search(r"\[\d+\]|https?://", context))
-
-                if not has_nearby_citation:
-                    issues.append(
-                        ReviewIssue(
-                            content_id=content.content_id,
-                            issue_type=IssueType.SOURCE,
-                            severity=IssueSeverity.HIGH,
-                            description=f"Claim requires citation: '{match.group()}'",
-                            original_text=context.strip(),
-                            location=f"Position {match.start()}",
-                            confidence=0.80,
-                        )
-                    )
+            except (KeyError, ValueError, TypeError) as e:
+                print(f"Error parsing source issue: {e}")
+                continue
 
         return issues

@@ -1,4 +1,6 @@
-"""Tests for content update agent."""
+"""Tests for AI-powered content update agent."""
+
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -8,20 +10,42 @@ from content_reviewer_agent.models.content import Content, ContentType, IssueTyp
 
 @pytest.mark.asyncio
 async def test_update_deprecated_tech():
-    """Test deprecated technology detection."""
+    """Test detection of deprecated technology."""
     agent = ContentUpdateAgent()
     content = Content(
         title="Test Content",
-        text="This tutorial uses Python 2.7 for all examples.",
+        text="Use Python 2.7 for this project and install jQuery for the frontend.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "deprecated",
+        "severity": "high",
+        "description": "Python 2.7 is deprecated and no longer supported",
+        "original_text": "Python 2.7",
+        "suggested_fix": "Python 3.11 or later",
+        "confidence": 0.95
+    },
+    {
+        "type": "outdated",
+        "severity": "medium",
+        "description": "jQuery is largely replaced by modern frameworks",
+        "original_text": "jQuery",
+        "suggested_fix": "Consider modern alternatives like React or Vue",
+        "confidence": 0.85
+    }
+]
+```"""
 
-    # Should flag Python 2
-    deprecated_issues = [i for i in issues if i.issue_type == IssueType.DEPRECATED]
-    assert len(deprecated_issues) > 0
-    assert any("python 2" in i.description.lower() for i in deprecated_issues)
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 2
 
 
 @pytest.mark.asyncio
@@ -30,15 +54,30 @@ async def test_update_old_versions():
     agent = ContentUpdateAgent()
     content = Content(
         title="Test Content",
-        text="Install Node.js 8.x for this project using Python 2.7.",
+        text="Install Node.js 8.x and use AngularJS for the project.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "outdated",
+        "severity": "high",
+        "description": "Node.js 8.x is outdated and unsupported",
+        "original_text": "Node.js 8.x",
+        "suggested_fix": "Node.js 20.x LTS",
+        "confidence": 0.90
+    }
+]
+```"""
 
-    # Should flag old versions (Python 2 will be caught as deprecated, Node might be caught as outdated)
-    # The test is less strict since version detection patterns might not catch all old versions
-    assert len(issues) > 0  # At least Python 2 should be caught
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
@@ -47,32 +86,51 @@ async def test_update_outdated_dates():
     agent = ContentUpdateAgent()
     content = Content(
         title="Test Content",
-        text="According to statistics from 2010, the market was different.",
+        text="According to 2010 statistics, the usage rate was 30%.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "outdated",
+        "severity": "medium",
+        "description": "Statistics from 2010 are 15 years old",
+        "original_text": "2010 statistics",
+        "suggested_fix": "Update with current statistics",
+        "confidence": 0.85
+    }
+]
+```"""
 
-    # Should flag old dates
-    date_issues = [i for i in issues if "2010" in str(i.original_text)]
-    assert len(date_issues) > 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
 async def test_update_current_content():
-    """Test with current content."""
+    """Test with current technology references."""
     agent = ContentUpdateAgent()
     content = Content(
         title="Test Content",
-        text="Python 3.12 is the latest version with improved performance.",
+        text="Use Python 3.11 and React 18 for modern development.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = "```json\n[]\n```"
 
-    # Should have minimal critical issues
-    critical_issues = [i for i in issues if i.severity.value == "critical"]
-    assert len(critical_issues) == 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) == 0
 
 
 @pytest.mark.asyncio
@@ -81,12 +139,27 @@ async def test_update_jquery_detection():
     agent = ContentUpdateAgent()
     content = Content(
         title="Test Content",
-        text="Use jQuery for DOM manipulation in your project.",
+        text="Include jQuery library for DOM manipulation.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "outdated",
+        "severity": "low",
+        "description": "jQuery is less commonly used in modern development",
+        "original_text": "jQuery library",
+        "suggested_fix": "Consider vanilla JavaScript or modern framework",
+        "confidence": 0.75
+    }
+]
+```"""
 
-    # Should flag jQuery as potentially outdated
-    deprecated_issues = [i for i in issues if i.issue_type == IssueType.DEPRECATED]
-    assert len(deprecated_issues) > 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1

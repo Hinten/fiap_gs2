@@ -20,14 +20,10 @@ classifiers = [
 ]
 
 dependencies = [
-    "crewai>=0.1.0",
-    "langchain>=0.1.0",
-    "openai>=1.0.0",
-    "anthropic>=0.7.0",
+    "google-generativeai>=0.3.0",
     "fastapi>=0.104.1",
     "pydantic>=2.5.0",
     "pydantic-settings>=2.1.0",
-    "boto3>=1.29.0",
     "uvicorn[standard]>=0.24.0",
 ]
 

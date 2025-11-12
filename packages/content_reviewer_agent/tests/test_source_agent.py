@@ -1,4 +1,6 @@
-"""Tests for source verification agent."""
+"""Tests for AI-powered source verification agent."""
+
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -8,76 +10,131 @@ from content_reviewer_agent.models.content import Content, ContentType, IssueTyp
 
 @pytest.mark.asyncio
 async def test_source_trusted_urls():
-    """Test trusted URL detection."""
+    """Test validation of trusted source URLs."""
     agent = SourceVerificationAgent()
     content = Content(
         title="Test Content",
-        text="According to https://docs.python.org/3/, Python is great.",
+        text="Research shows that 80% of users prefer the new design.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "source",
+        "severity": "medium",
+        "description": "Statistical claim requires citation",
+        "original_text": "Research shows that 80% of users prefer the new design",
+        "suggested_fix": "Add citation for research source",
+        "sources": ["academic journals", "research databases"],
+        "confidence": 0.85
+    }
+]
+```"""
 
-    # Trusted URLs should not be flagged
-    url_issues = [
-        i
-        for i in issues
-        if i.issue_type == IssueType.SOURCE and "python.org" in str(i.original_text)
-    ]
-    # Should not flag trusted domains as unverified
-    unverified = [i for i in url_issues if "unverified" in i.description.lower()]
-    assert len(unverified) == 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
 async def test_source_untrusted_urls():
-    """Test untrusted URL flagging."""
+    """Test detection of potentially untrusted sources."""
     agent = SourceVerificationAgent()
     content = Content(
         title="Test Content",
-        text="Check out this site: https://random-blog-123.com/article",
+        text="According to random blog, this is the best approach.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "source",
+        "severity": "high",
+        "description": "Unreliable source cited",
+        "original_text": "According to random blog",
+        "suggested_fix": "Replace with credible source",
+        "confidence": 0.90
+    }
+]
+```"""
 
-    # Should flag untrusted URLs
-    source_issues = [i for i in issues if i.issue_type == IssueType.SOURCE]
-    assert len(source_issues) > 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
 async def test_source_missing_citations():
-    """Test missing citation detection."""
+    """Test detection of missing citations."""
     agent = SourceVerificationAgent()
     content = Content(
         title="Test Content",
-        text='Research shows that "Python is the most popular language in 2024".',
+        text='"This is a quote without attribution"',
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "source",
+        "severity": "high",
+        "description": "Quote without attribution",
+        "original_text": "This is a quote without attribution",
+        "suggested_fix": "Add source attribution",
+        "confidence": 0.95
+    }
+]
+```"""
 
-    # Should flag missing citations
-    citation_issues = [i for i in issues if "citation" in i.description.lower()]
-    assert len(citation_issues) > 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
 async def test_source_claims_without_sources():
-    """Test unsupported claims detection."""
+    """Test claims requiring sources."""
     agent = SourceVerificationAgent()
     content = Content(
         title="Test Content",
-        text="Studies have shown that 90% of developers prefer Python.",
+        text="Studies have proven that this method is superior.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "source",
+        "severity": "medium",
+        "description": "Claim requires supporting sources",
+        "original_text": "Studies have proven",
+        "suggested_fix": "Cite specific studies",
+        "confidence": 0.80
+    }
+]
+```"""
 
-    # Should flag claims needing sources
-    claim_issues = [i for i in issues if "claim" in i.description.lower()]
-    assert len(claim_issues) > 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
@@ -86,12 +143,16 @@ async def test_source_with_proper_citations():
     agent = SourceVerificationAgent()
     content = Content(
         title="Test Content",
-        text="According to research [1], Python is popular. [1] https://docs.python.org/",
+        text="According to Smith et al. (2024), the new approach improves performance.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = "```json\n[]\n```"
 
-    # Should have fewer issues with proper citations
-    critical_issues = [i for i in issues if i.severity.value == "critical"]
-    assert len(critical_issues) == 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) == 0

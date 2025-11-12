@@ -1,4 +1,6 @@
-"""Tests for comprehension agent."""
+"""Tests for AI-powered comprehension agent."""
+
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -8,65 +10,106 @@ from content_reviewer_agent.models.content import Content, ContentType, IssueTyp
 
 @pytest.mark.asyncio
 async def test_comprehension_complex_words():
-    """Test complex word detection."""
+    """Test detection of complex words."""
     agent = ComprehensionAgent()
     content = Content(
         title="Test Content",
-        text="We must utilize this methodology to facilitate the implementation.",
+        text="We must utilize this methodology to facilitate the implementation process.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "comprehension",
+        "severity": "low",
+        "description": "Complex word 'utilize' can be simplified",
+        "original_text": "utilize",
+        "suggested_fix": "use",
+        "confidence": 0.85
+    },
+    {
+        "type": "comprehension",
+        "severity": "low",
+        "description": "Complex word 'facilitate' can be simplified",
+        "original_text": "facilitate",
+        "suggested_fix": "help with",
+        "confidence": 0.80
+    }
+]
+```"""
 
-    # Should find complex words
-    assert len(issues) > 0
-    assert any("utilize" in i.original_text.lower() for i in issues if i.original_text)
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 2
 
 
 @pytest.mark.asyncio
 async def test_comprehension_long_sentences():
-    """Test long sentence detection."""
+    """Test detection of long sentences."""
     agent = ComprehensionAgent()
-
-    # Create a very long sentence
-    long_sentence = (
-        "This is an extremely long sentence that goes on and on and on and on "
-        "and contains way too many words for easy comprehension and should really "
-        "be broken up into multiple smaller sentences for better readability and "
-        "understanding by the reader who is trying to learn from this content."
-    )
-
     content = Content(
         title="Test Content",
-        text=long_sentence,
+        text="This is a very long sentence that contains many clauses and continues on and on without proper breaks which makes it quite difficult for readers to follow and understand the main point being communicated.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "comprehension",
+        "severity": "medium",
+        "description": "Sentence is too long and complex",
+        "original_text": "This is a very long sentence...",
+        "suggested_fix": "Break into multiple sentences",
+        "confidence": 0.90
+    }
+]
+```"""
 
-    # Should flag long sentences
-    assert len(issues) > 0
-    comprehension_issues = [
-        i for i in issues if i.issue_type == IssueType.COMPREHENSION
-    ]
-    assert len(comprehension_issues) > 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) >= 1
 
 
 @pytest.mark.asyncio
 async def test_comprehension_passive_voice():
-    """Test passive voice detection (pattern-based, may not catch all cases)."""
+    """Test passive voice detection."""
     agent = ComprehensionAgent()
     content = Content(
         title="Test Content",
-        text="The code was tested thoroughly and errors were detected in the system.",
+        text="The code was tested thoroughly.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = """```json
+[
+    {
+        "type": "comprehension",
+        "severity": "low",
+        "description": "Passive voice - could be more direct",
+        "original_text": "The code was tested",
+        "suggested_fix": "We tested the code",
+        "confidence": 0.75
+    }
+]
+```"""
 
-    # Passive voice detection is pattern-based and may not be perfect
-    # Just ensure the agent runs without errors
-    assert isinstance(issues, list)
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert isinstance(issues, list)
 
 
 @pytest.mark.asyncio
@@ -74,13 +117,17 @@ async def test_comprehension_simple_content():
     """Test with simple, clear content."""
     agent = ComprehensionAgent()
     content = Content(
-        title="Simple Content",
-        text="Python is easy to learn. It has clear syntax.",
+        title="Test Content",
+        text="Python is easy to learn. It has clear syntax. Many people use it.",
         content_type=ContentType.TEXT,
     )
 
-    issues = await agent.review(content)
+    mock_response = "```json\n[]\n```"
 
-    # Should have minimal issues
-    high_severity = [i for i in issues if i.severity.value in ["critical", "high"]]
-    assert len(high_severity) == 0
+    with patch.object(agent.model, "generate_content") as mock_generate:
+        mock_resp = Mock()
+        mock_resp.text = mock_response
+        mock_generate.return_value = mock_resp
+
+        issues = await agent.review(content)
+        assert len(issues) == 0

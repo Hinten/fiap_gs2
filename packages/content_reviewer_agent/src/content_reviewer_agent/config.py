@@ -18,11 +18,11 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     debug: bool = False
 
-    # AI Model Configuration
-    openai_api_key: Optional[str] = None
-    anthropic_api_key: Optional[str] = None
-    model_name: str = "gpt-4"
+    # Google AI Configuration
+    google_api_key: Optional[str] = None
+    google_model_name: str = "gemini-1.5-flash"
     temperature: float = 0.3
+    max_output_tokens: int = 2048
 
     # Agent Configuration
     max_retries: int = 3

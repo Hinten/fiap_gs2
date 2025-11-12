@@ -1,9 +1,8 @@
-"""Comprehension improvement agent."""
+"""Comprehension agent using Google AI for readability analysis."""
 
-import re
 from typing import List
 
-from content_reviewer_agent.agents.base import BaseReviewAgent
+from content_reviewer_agent.agents.base_ai import BaseAIAgent
 from content_reviewer_agent.models.content import (
     Content,
     IssueSeverity,
@@ -12,177 +11,106 @@ from content_reviewer_agent.models.content import (
 )
 
 
-class ComprehensionAgent(BaseReviewAgent):
-    """Agent that analyzes content for comprehension improvements."""
+class ComprehensionAgent(BaseAIAgent):
+    """Agent that analyzes content comprehension using AI."""
+
+    SYSTEM_PROMPT = """You are an expert in educational content design and readability. Your task is to analyze content for comprehension issues and suggest improvements.
+
+Focus on:
+1. Overly complex vocabulary that could be simplified
+2. Long, convoluted sentences that could be broken up
+3. Dense paragraphs that need better structure
+4. Passive voice that could be made more direct
+5. Technical jargon without explanation
+6. Unclear explanations or logical flow
+
+For each issue, provide:
+{
+    "type": "comprehension",
+    "severity": "critical|high|medium|low",
+    "description": "Clear description of the comprehension issue",
+    "original_text": "The problematic text segment",
+    "suggested_fix": "A clearer alternative",
+    "confidence": 0.85
+}
+
+Return a JSON array of issues. Focus on changes that genuinely improve clarity and understanding."""
 
     def __init__(self):
         """Initialize the comprehension agent."""
         super().__init__(
             name="Comprehension Improvement Agent",
             description="Analyzes content clarity and suggests improvements for easier understanding",
+            system_prompt=self.SYSTEM_PROMPT,
         )
 
-        # Complex words that could be simplified
-        self.complex_words = {
-            "utilize": "use",
-            "implement": "build",
-            "instantiate": "create",
-            "terminate": "end",
-            "commence": "start",
-            "facilitate": "help",
-            "methodology": "method",
-            "paradigm": "model",
-        }
-
-        # Readability thresholds
-        self.max_sentence_length = 25  # words
-        self.max_paragraph_length = 150  # words
-
-    async def review(self, content: Content) -> List[ReviewIssue]:
-        """Review content for comprehension issues.
+    def get_review_prompt(self, content: Content) -> str:
+        """Generate the review prompt for comprehension analysis.
 
         Args:
             content: Content to review
 
         Returns:
-            List of comprehension issues found
+            Prompt string for the AI model
         """
-        issues = []
+        return f"""Please analyze the following content for comprehension and readability issues:
 
-        # Check for overly complex words
-        issues.extend(self._check_complex_words(content))
+Title: {content.title}
+Content Type: {content.content_type.value}
+{f"Discipline: {content.discipline}" if content.discipline else ""}
+Text:
+{content.text}
 
-        # Check sentence length
-        issues.extend(self._check_sentence_length(content))
+Identify areas where the content could be clearer or easier to understand. Return your findings as a JSON array."""
 
-        # Check paragraph length
-        issues.extend(self._check_paragraph_length(content))
-
-        # Check for passive voice
-        issues.extend(self._check_passive_voice(content))
-
-        return issues
-
-    def _check_complex_words(self, content: Content) -> List[ReviewIssue]:
-        """Check for unnecessarily complex words.
+    def parse_ai_response(
+        self, response_text: str, content: Content
+    ) -> List[ReviewIssue]:
+        """Parse AI response into ReviewIssue objects.
 
         Args:
-            content: Content to check
+            response_text: Response from the AI model
+            content: Original content being reviewed
 
         Returns:
-            List of issues with complex words
+            List of ReviewIssue objects
         """
         issues = []
-        words = re.findall(r"\b\w+\b", content.text.lower())
 
-        for word in words:
-            if word in self.complex_words:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.COMPREHENSION,
-                        severity=IssueSeverity.LOW,
-                        description=f"Consider simplifying: '{word}' could be '{self.complex_words[word]}'",
-                        original_text=word,
-                        suggested_fix=self.complex_words[word],
-                        confidence=0.75,
-                    )
+        # Parse JSON response
+        parsed = self.parse_json_response(response_text)
+        if not parsed:
+            return issues
+
+        # Handle both single dict and list of dicts
+        issue_list = parsed if isinstance(parsed, list) else [parsed]
+
+        for item in issue_list:
+            try:
+                severity_map = {
+                    "critical": IssueSeverity.CRITICAL,
+                    "high": IssueSeverity.HIGH,
+                    "medium": IssueSeverity.MEDIUM,
+                    "low": IssueSeverity.LOW,
+                }
+
+                severity = severity_map.get(
+                    item.get("severity", "").lower(), IssueSeverity.MEDIUM
                 )
 
-        return issues
+                issue = self.create_issue(
+                    content=content,
+                    issue_type=IssueType.COMPREHENSION,
+                    severity=severity,
+                    description=item.get("description", ""),
+                    original_text=item.get("original_text"),
+                    suggested_fix=item.get("suggested_fix"),
+                    confidence=float(item.get("confidence", 0.80)),
+                )
+                issues.append(issue)
 
-    def _check_sentence_length(self, content: Content) -> List[ReviewIssue]:
-        """Check for overly long sentences.
-
-        Args:
-            content: Content to check
-
-        Returns:
-            List of issues with long sentences
-        """
-        issues = []
-        sentences = re.split(r"[.!?]+", content.text)
-
-        for sentence in sentences:
-            if not sentence.strip():
+            except (KeyError, ValueError, TypeError) as e:
+                print(f"Error parsing comprehension issue: {e}")
                 continue
-
-            word_count = len(sentence.split())
-            if word_count > self.max_sentence_length:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.COMPREHENSION,
-                        severity=IssueSeverity.MEDIUM,
-                        description=f"Long sentence ({word_count} words). Consider breaking it up for clarity.",
-                        original_text=sentence.strip()[:100] + "...",
-                        confidence=0.80,
-                    )
-                )
-
-        return issues
-
-    def _check_paragraph_length(self, content: Content) -> List[ReviewIssue]:
-        """Check for overly long paragraphs.
-
-        Args:
-            content: Content to check
-
-        Returns:
-            List of issues with long paragraphs
-        """
-        issues = []
-        paragraphs = content.text.split("\n\n")
-
-        for i, paragraph in enumerate(paragraphs, 1):
-            if not paragraph.strip():
-                continue
-
-            word_count = len(paragraph.split())
-            if word_count > self.max_paragraph_length:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.COMPREHENSION,
-                        severity=IssueSeverity.MEDIUM,
-                        description=f"Long paragraph ({word_count} words). Consider breaking into smaller chunks.",
-                        location=f"Paragraph {i}",
-                        confidence=0.85,
-                    )
-                )
-
-        return issues
-
-    def _check_passive_voice(self, content: Content) -> List[ReviewIssue]:
-        """Check for excessive passive voice usage.
-
-        Args:
-            content: Content to check
-
-        Returns:
-            List of issues with passive voice
-        """
-        issues = []
-
-        # Simple passive voice detection (was/were + past participle)
-        passive_patterns = [
-            r"\b(is|are|was|were|be|been|being)\s+(being\s+)?\w+ed\b",
-            r"\b(is|are|was|were|be|been|being)\s+\w+en\b",
-        ]
-
-        for pattern in passive_patterns:
-            matches = re.finditer(pattern, content.text, re.IGNORECASE)
-            for match in matches:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.COMPREHENSION,
-                        severity=IssueSeverity.LOW,
-                        description="Consider using active voice for better clarity",
-                        original_text=match.group(),
-                        location=f"Position {match.start()}",
-                        confidence=0.65,
-                    )
-                )
 
         return issues

@@ -1,9 +1,8 @@
-"""Error detection agent for spelling, grammar, and syntax checking."""
+"""Error detection agent using Google AI for spelling, grammar, and syntax checking."""
 
-import re
 from typing import List
 
-from content_reviewer_agent.agents.base import BaseReviewAgent
+from content_reviewer_agent.agents.base_ai import BaseAIAgent
 from content_reviewer_agent.models.content import (
     Content,
     IssueSeverity,
@@ -12,115 +11,115 @@ from content_reviewer_agent.models.content import (
 )
 
 
-class ErrorDetectionAgent(BaseReviewAgent):
-    """Agent that detects errors in content (spelling, grammar, syntax)."""
+class ErrorDetectionAgent(BaseAIAgent):
+    """Agent that detects errors in content using AI (spelling, grammar, syntax)."""
+
+    SYSTEM_PROMPT = """You are an expert editor and proofreader. Your task is to identify spelling errors, grammar mistakes, and syntax issues in educational content.
+
+For each issue you find, provide:
+1. The type of error (spelling, grammar, or syntax)
+2. The severity (critical, high, medium, low)
+3. A clear description of the problem
+4. The original problematic text
+5. A suggested fix
+6. Your confidence level (0.0 to 1.0)
+
+Return your findings as a JSON array of issues. Each issue should have this structure:
+{
+    "type": "spelling|grammar|syntax",
+    "severity": "critical|high|medium|low",
+    "description": "Clear description of the issue",
+    "original_text": "The problematic text",
+    "suggested_fix": "The corrected version",
+    "confidence": 0.95
+}
+
+Be thorough but focus on genuine errors that affect readability and correctness."""
 
     def __init__(self):
         """Initialize the error detection agent."""
         super().__init__(
             name="Error Detection Agent",
-            description="Detects spelling, grammar, and syntax errors in content",
+            description="Detects spelling, grammar, and syntax errors using AI",
+            system_prompt=self.SYSTEM_PROMPT,
         )
 
-        # Common spelling errors (for demonstration)
-        self.common_errors = {
-            "recieve": "receive",
-            "occured": "occurred",
-            "seperate": "separate",
-            "definately": "definitely",
-            "accomodate": "accommodate",
-            "untill": "until",
-            "thier": "their",
-            "wierd": "weird",
-            "acheive": "achieve",
-            "beleive": "believe",
-        }
-
-        # Grammar patterns to check
-        self.grammar_patterns = [
-            (r"\ba\s+[aeiou]", "Use 'an' before vowel sounds"),
-            (r"\ban\s+[^aeiou]", "Use 'a' before consonant sounds"),
-            (r"\s\s+", "Multiple consecutive spaces"),
-            (r"[.!?]\s*[a-z]", "Sentence should start with capital letter"),
-        ]
-
-    async def review(self, content: Content) -> List[ReviewIssue]:
-        """Review content for errors.
+    def get_review_prompt(self, content: Content) -> str:
+        """Generate the review prompt for error detection.
 
         Args:
             content: Content to review
 
         Returns:
-            List of issues found
+            Prompt string for the AI model
         """
-        issues = []
-        text = content.text.lower()
+        return f"""Please review the following content for spelling, grammar, and syntax errors:
 
-        # Check for spelling errors
-        words = re.findall(r"\b\w+\b", text)
-        for word in words:
-            if word in self.common_errors:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.SPELLING,
-                        severity=IssueSeverity.LOW,
-                        description=f"Spelling error: '{word}'",
-                        original_text=word,
-                        suggested_fix=self.common_errors[word],
-                        confidence=0.95,
-                    )
-                )
+Title: {content.title}
+Content Type: {content.content_type.value}
+Text:
+{content.text}
 
-        # Check for grammar issues
-        for pattern, message in self.grammar_patterns:
-            matches = re.finditer(pattern, content.text)
-            for match in matches:
-                issues.append(
-                    ReviewIssue(
-                        content_id=content.content_id,
-                        issue_type=IssueType.GRAMMAR,
-                        severity=IssueSeverity.MEDIUM,
-                        description=message,
-                        original_text=match.group(),
-                        location=f"Position {match.start()}-{match.end()}",
-                        confidence=0.85,
-                    )
-                )
+Identify all errors and return them as a JSON array."""
 
-        # Check for syntax issues in code blocks
-        if content.content_type.value == "code":
-            issues.extend(self._check_code_syntax(content))
-
-        return issues
-
-    def _check_code_syntax(self, content: Content) -> List[ReviewIssue]:
-        """Check syntax in code content.
+    def parse_ai_response(
+        self, response_text: str, content: Content
+    ) -> List[ReviewIssue]:
+        """Parse AI response into ReviewIssue objects.
 
         Args:
-            content: Content with code
+            response_text: Response from the AI model
+            content: Original content being reviewed
 
         Returns:
-            List of syntax issues
+            List of ReviewIssue objects
         """
         issues = []
 
-        # Check for common Python syntax issues (simplified)
-        lines = content.text.split("\n")
-        for i, line in enumerate(lines, 1):
-            # Check for missing colons in control structures
-            if re.search(r"(if|for|while|def|class)\s+.*[^:]$", line.strip()):
-                if line.strip() and not line.strip().startswith("#"):
-                    issues.append(
-                        ReviewIssue(
-                            content_id=content.content_id,
-                            issue_type=IssueType.SYNTAX,
-                            severity=IssueSeverity.HIGH,
-                            description="Possible missing colon at end of statement",
-                            original_text=line.strip(),
-                            location=f"Line {i}",
-                            confidence=0.75,
-                        )
-                    )
+        # Parse JSON response
+        parsed = self.parse_json_response(response_text)
+        if not parsed:
+            return issues
+
+        # Handle both single dict and list of dicts
+        issue_list = parsed if isinstance(parsed, list) else [parsed]
+
+        for item in issue_list:
+            try:
+                # Map AI response to our issue types
+                issue_type_map = {
+                    "spelling": IssueType.SPELLING,
+                    "grammar": IssueType.GRAMMAR,
+                    "syntax": IssueType.SYNTAX,
+                }
+
+                severity_map = {
+                    "critical": IssueSeverity.CRITICAL,
+                    "high": IssueSeverity.HIGH,
+                    "medium": IssueSeverity.MEDIUM,
+                    "low": IssueSeverity.LOW,
+                }
+
+                issue_type = issue_type_map.get(
+                    item.get("type", "").lower(), IssueType.TECHNICAL
+                )
+                severity = severity_map.get(
+                    item.get("severity", "").lower(), IssueSeverity.MEDIUM
+                )
+
+                issue = self.create_issue(
+                    content=content,
+                    issue_type=issue_type,
+                    severity=severity,
+                    description=item.get("description", ""),
+                    original_text=item.get("original_text"),
+                    suggested_fix=item.get("suggested_fix"),
+                    confidence=float(item.get("confidence", 0.85)),
+                )
+                issues.append(issue)
+
+            except (KeyError, ValueError, TypeError) as e:
+                print(f"Error parsing issue item: {e}")
+                continue
 
         return issues
