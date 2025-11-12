@@ -253,7 +253,7 @@ async def test_error_agent():
 - [x] Remove `parse_ai_response()` methods from all agents
 - [x] Add `convert_ai_issues_to_review_issues()` to BaseAIAgent
 - [x] Update all tests to use Pydantic models
-- [x] Update config model name to `gemini-2.0-flash-exp`
+- [x] Update config model name to `gemini-2.5-flash`
 - [x] Run tests (22/22 passing ✅)
 
 ## Performance Impact
@@ -309,8 +309,7 @@ Model does not support structured output
 
 **Solution:**
 Use a compatible model:
-- ✅ `gemini-2.0-flash-exp`
-- ✅ `gemini-1.5-flash` (with limitations)
+- ✅ `gemini-2.5-flash`
 - ❌ Older models may not support structured output
 
 ## Resources

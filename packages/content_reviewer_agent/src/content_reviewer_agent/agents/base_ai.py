@@ -75,17 +75,20 @@ class BaseAIAgent(ABC):
 
             # Parse the response using Pydantic
             if response.text:
+                print("AI model response received")
                 review_response = AIReviewResponse.model_validate_json(response.text)
                 issues = self.convert_ai_issues_to_review_issues(
                     review_response.issues, content
                 )
                 return issues
             else:
+                print("Empty response from AI model")
                 return []
-
-        except Exception as e:
-            print(f"Error in {self.name}: {e}")
-            return []
+        finally:
+            print('Review completed by agent:', self.name)
+        # except Exception as e:
+        #     print(f"Error in {self.name}: {e}")
+        #     return []
 
     def convert_ai_issues_to_review_issues(
         self, ai_issues: List, content: Content

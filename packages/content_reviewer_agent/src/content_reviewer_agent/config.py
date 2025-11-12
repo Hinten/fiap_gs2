@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # Google AI Configuration
     google_api_key: Optional[str] = None
-    google_model_name: str = "gemini-2.0-flash-exp"
+    google_model_name: str = "gemini-2.5-flash"
     temperature: float = 0.3
     max_output_tokens: int = 2048
 
