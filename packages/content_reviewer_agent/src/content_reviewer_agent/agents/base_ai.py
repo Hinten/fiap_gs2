@@ -1,12 +1,13 @@
 """Base agent interface for AI-powered content reviewers."""
 
-import json
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 from content_reviewer_agent.config import settings
+from content_reviewer_agent.models.ai_schema import AIReviewResponse
 from content_reviewer_agent.models.content import (
     Content,
     IssueSeverity,
@@ -30,18 +31,9 @@ class BaseAIAgent(ABC):
         self.description = description
         self.system_prompt = system_prompt
 
-        # Configure Google AI
-        if settings.google_api_key:
-            genai.configure(api_key=settings.google_api_key)
-
-        # Initialize the model
-        self.model = genai.GenerativeModel(
-            model_name=settings.google_model_name,
-            generation_config={
-                "temperature": settings.temperature,
-                "max_output_tokens": settings.max_output_tokens,
-            },
-        )
+        # Initialize the Google AI client (can be None for testing)
+        api_key = settings.google_api_key or "test-key"  # Use test key if None
+        self.client = genai.Client(api_key=api_key)
 
     @abstractmethod
     def get_review_prompt(self, content: Content) -> str:
@@ -52,21 +44,6 @@ class BaseAIAgent(ABC):
 
         Returns:
             Prompt string for the AI model
-        """
-        pass
-
-    @abstractmethod
-    def parse_ai_response(
-        self, response_text: str, content: Content
-    ) -> List[ReviewIssue]:
-        """Parse AI response into ReviewIssue objects.
-
-        Args:
-            response_text: Response from the AI model
-            content: Original content being reviewed
-
-        Returns:
-            List of ReviewIssue objects
         """
         pass
 
@@ -84,12 +61,24 @@ class BaseAIAgent(ABC):
             user_prompt = self.get_review_prompt(content)
             full_prompt = f"{self.system_prompt}\n\n{user_prompt}"
 
-            # Call the AI model
-            response = self.model.generate_content(full_prompt)
+            # Call the AI model with structured output
+            response = self.client.models.generate_content(
+                model=settings.google_model_name,
+                contents=full_prompt,
+                config=types.GenerateContentConfig(
+                    temperature=settings.temperature,
+                    max_output_tokens=settings.max_output_tokens,
+                    response_mime_type="application/json",
+                    response_schema=AIReviewResponse,
+                ),
+            )
 
-            # Parse the response
+            # Parse the response using Pydantic
             if response.text:
-                issues = self.parse_ai_response(response.text, content)
+                review_response = AIReviewResponse.model_validate_json(response.text)
+                issues = self.convert_ai_issues_to_review_issues(
+                    review_response.issues, content
+                )
                 return issues
             else:
                 return []
@@ -97,6 +86,65 @@ class BaseAIAgent(ABC):
         except Exception as e:
             print(f"Error in {self.name}: {e}")
             return []
+
+    def convert_ai_issues_to_review_issues(
+        self, ai_issues: List, content: Content
+    ) -> List[ReviewIssue]:
+        """Convert AI response issues to ReviewIssue objects.
+
+        Args:
+            ai_issues: List of AIReviewIssue objects from AI
+            content: Original content being reviewed
+
+        Returns:
+            List of ReviewIssue objects
+        """
+        issues = []
+
+        for ai_issue in ai_issues:
+            try:
+                # Map AI response to our issue types
+                issue_type_map = {
+                    "spelling": IssueType.SPELLING,
+                    "grammar": IssueType.GRAMMAR,
+                    "syntax": IssueType.SYNTAX,
+                    "comprehension": IssueType.COMPREHENSION,
+                    "source": IssueType.SOURCE,
+                    "outdated": IssueType.OUTDATED,
+                    "deprecated": IssueType.DEPRECATED,
+                }
+
+                severity_map = {
+                    "critical": IssueSeverity.CRITICAL,
+                    "high": IssueSeverity.HIGH,
+                    "medium": IssueSeverity.MEDIUM,
+                    "low": IssueSeverity.LOW,
+                }
+
+                issue_type = issue_type_map.get(
+                    ai_issue.type.lower(), IssueType.TECHNICAL
+                )
+                severity = severity_map.get(
+                    ai_issue.severity.lower(), IssueSeverity.MEDIUM
+                )
+
+                issue = self.create_issue(
+                    content=content,
+                    issue_type=issue_type,
+                    severity=severity,
+                    description=ai_issue.description,
+                    original_text=ai_issue.original_text,
+                    suggested_fix=ai_issue.suggested_fix,
+                    sources=ai_issue.sources or [],
+                    confidence=ai_issue.confidence,
+                )
+                issues.append(issue)
+
+            except (KeyError, ValueError, TypeError) as e:
+                print(f"Error converting AI issue: {e}")
+                continue
+
+        return issues
 
     def create_issue(
         self,
@@ -137,30 +185,6 @@ class BaseAIAgent(ABC):
             sources=sources or [],
             confidence=confidence,
         )
-
-    def parse_json_response(self, response_text: str) -> Optional[dict]:
-        """Parse JSON response from AI, handling markdown code blocks.
-
-        Args:
-            response_text: Response text from AI
-
-        Returns:
-            Parsed JSON dict or None if parsing fails
-        """
-        try:
-            # Remove markdown code blocks if present
-            text = response_text.strip()
-            if text.startswith("```json"):
-                text = text[7:]
-            elif text.startswith("```"):
-                text = text[3:]
-            if text.endswith("```"):
-                text = text[:-3]
-
-            text = text.strip()
-            return json.loads(text)
-        except json.JSONDecodeError:
-            return None
 
     def __repr__(self) -> str:
         """String representation of the agent."""

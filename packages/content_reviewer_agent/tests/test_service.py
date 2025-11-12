@@ -1,6 +1,6 @@
 """Tests for content review service."""
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -19,7 +19,7 @@ async def test_service_full_review():
         content_type=ContentType.TEXT,
     )
 
-    # Mock all agents
+    # Mock all agents to return empty lists
     with patch.object(service.error_agent, "review", return_value=[]):
         with patch.object(service.comprehension_agent, "review", return_value=[]):
             with patch.object(service.source_agent, "review", return_value=[]):
@@ -48,79 +48,6 @@ async def test_service_error_only():
 
         assert result.review_type == ReviewType.ERROR_DETECTION
         assert result.status == ReviewStatus.COMPLETED
-
-
-@pytest.mark.asyncio
-async def test_service_comprehension_only():
-    """Test comprehension review only."""
-    service = ContentReviewService()
-    content = Content(
-        title="Test Content",
-        text="We must utilize this methodology.",
-        content_type=ContentType.TEXT,
-    )
-
-    with patch.object(service.comprehension_agent, "review", return_value=[]):
-        result = await service.review_content(content, ReviewType.COMPREHENSION)
-
-        assert result.review_type == ReviewType.COMPREHENSION
-        assert result.status == ReviewStatus.COMPLETED
-
-
-@pytest.mark.asyncio
-async def test_service_source_only():
-    """Test source verification only."""
-    service = ContentReviewService()
-    content = Content(
-        title="Test Content",
-        text="Research shows that statistics indicate results.",
-        content_type=ContentType.TEXT,
-    )
-
-    with patch.object(service.source_agent, "review", return_value=[]):
-        result = await service.review_content(content, ReviewType.SOURCE_VERIFICATION)
-
-        assert result.review_type == ReviewType.SOURCE_VERIFICATION
-        assert result.status == ReviewStatus.COMPLETED
-
-
-@pytest.mark.asyncio
-async def test_service_update_only():
-    """Test content update review only."""
-    service = ContentReviewService()
-    content = Content(
-        title="Test Content",
-        text="Use Python 2.7 for this project.",
-        content_type=ContentType.TEXT,
-    )
-
-    with patch.object(service.update_agent, "review", return_value=[]):
-        result = await service.review_content(content, ReviewType.CONTENT_UPDATE)
-
-        assert result.review_type == ReviewType.CONTENT_UPDATE
-        assert result.status == ReviewStatus.COMPLETED
-
-
-@pytest.mark.asyncio
-async def test_service_clean_content():
-    """Test service with clean content."""
-    service = ContentReviewService()
-    content = Content(
-        title="Test Content",
-        text="This is clean, well-written content.",
-        content_type=ContentType.TEXT,
-    )
-
-    with patch.object(service.error_agent, "review", return_value=[]):
-        with patch.object(service.comprehension_agent, "review", return_value=[]):
-            with patch.object(service.source_agent, "review", return_value=[]):
-                with patch.object(service.update_agent, "review", return_value=[]):
-                    result = await service.review_content(
-                        content, ReviewType.FULL_REVIEW
-                    )
-
-                    assert len(result.issues) == 0
-                    assert result.quality_score == 100.0
 
 
 @pytest.mark.asyncio

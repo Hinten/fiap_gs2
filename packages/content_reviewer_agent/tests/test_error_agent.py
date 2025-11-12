@@ -5,107 +5,77 @@ from unittest.mock import Mock, patch
 import pytest
 
 from content_reviewer_agent.agents.error_detection import ErrorDetectionAgent
-from content_reviewer_agent.models.content import (
-    Content,
-    ContentType,
-    IssueSeverity,
-    IssueType,
-)
-
-
-@pytest.fixture
-def mock_ai_response_spelling():
-    """Mock AI response for spelling errors."""
-    return """```json
-[
-    {
-        "type": "spelling",
-        "severity": "low",
-        "description": "Spelling error: 'recieve' should be 'receive'",
-        "original_text": "recieve",
-        "suggested_fix": "receive",
-        "confidence": 0.95
-    },
-    {
-        "type": "spelling",
-        "severity": "low",
-        "description": "Spelling error: 'occured' should be 'occurred'",
-        "original_text": "occured",
-        "suggested_fix": "occurred",
-        "confidence": 0.95
-    },
-    {
-        "type": "spelling",
-        "severity": "low",
-        "description": "Spelling error: 'seperate' should be 'separate'",
-        "original_text": "seperate",
-        "suggested_fix": "separate",
-        "confidence": 0.95
-    }
-]
-```"""
-
-
-@pytest.fixture
-def mock_ai_response_grammar():
-    """Mock AI response for grammar errors."""
-    return """```json
-[
-    {
-        "type": "grammar",
-        "severity": "medium",
-        "description": "Article usage: Use 'an' before words starting with vowel sounds",
-        "original_text": "a example",
-        "suggested_fix": "an example",
-        "confidence": 0.90
-    }
-]
-```"""
+from content_reviewer_agent.models.ai_schema import AIReviewIssue, AIReviewResponse
+from content_reviewer_agent.models.content import Content, ContentType, IssueType
 
 
 @pytest.mark.asyncio
-async def test_error_agent_spelling(mock_ai_response_spelling):
+async def test_error_agent_spelling():
     """Test spelling error detection with AI."""
     agent = ErrorDetectionAgent()
     content = Content(
         title="Test Content",
-        text="I recieve emails regularly and occured issues with seperate accounts.",
+        text="I recieve emails regularly.",
         content_type=ContentType.TEXT,
     )
 
-    # Mock the AI model response
-    with patch.object(agent.model, "generate_content") as mock_generate:
+    # Mock AI response with Pydantic models
+    mock_response_data = AIReviewResponse(
+        issues=[
+            AIReviewIssue(
+                type="spelling",
+                severity="low",
+                description="Spelling error: 'recieve' should be 'receive'",
+                original_text="recieve",
+                suggested_fix="receive",
+                confidence=0.95,
+            )
+        ]
+    )
+
+    # Mock the client's generate_content method
+    with patch.object(agent.client.models, "generate_content") as mock_generate:
         mock_response = Mock()
-        mock_response.text = mock_ai_response_spelling
+        mock_response.text = mock_response_data.model_dump_json()
         mock_generate.return_value = mock_response
 
         issues = await agent.review(content)
 
         # Should find spelling errors
-        assert len(issues) >= 3
+        assert len(issues) >= 1
         spelling_issues = [i for i in issues if i.issue_type == IssueType.SPELLING]
-        assert len(spelling_issues) >= 3
+        assert len(spelling_issues) >= 1
 
 
 @pytest.mark.asyncio
-async def test_error_agent_grammar(mock_ai_response_grammar):
+async def test_error_agent_grammar():
     """Test grammar error detection with AI."""
     agent = ErrorDetectionAgent()
     content = Content(
         title="Test Content",
-        text="This is a example of incorrect grammar.",
+        text="This is a example.",
         content_type=ContentType.TEXT,
     )
 
-    # Mock the AI model response
-    with patch.object(agent.model, "generate_content") as mock_generate:
+    mock_response_data = AIReviewResponse(
+        issues=[
+            AIReviewIssue(
+                type="grammar",
+                severity="medium",
+                description="Article usage error",
+                original_text="a example",
+                suggested_fix="an example",
+                confidence=0.90,
+            )
+        ]
+    )
+
+    with patch.object(agent.client.models, "generate_content") as mock_generate:
         mock_response = Mock()
-        mock_response.text = mock_ai_response_grammar
+        mock_response.text = mock_response_data.model_dump_json()
         mock_generate.return_value = mock_response
 
         issues = await agent.review(content)
-
-        # Should find grammar issues
         grammar_issues = [i for i in issues if i.issue_type == IssueType.GRAMMAR]
         assert len(grammar_issues) >= 1
 
@@ -116,14 +86,15 @@ async def test_error_agent_clean_content():
     agent = ErrorDetectionAgent()
     content = Content(
         title="Test Content",
-        text="This is well-written content with proper grammar and spelling.",
+        text="This is well-written content.",
         content_type=ContentType.TEXT,
     )
 
-    # Mock empty response
-    with patch.object(agent.model, "generate_content") as mock_generate:
+    mock_response_data = AIReviewResponse(issues=[])
+
+    with patch.object(agent.client.models, "generate_content") as mock_generate:
         mock_response = Mock()
-        mock_response.text = "```json\n[]\n```"
+        mock_response.text = mock_response_data.model_dump_json()
         mock_generate.return_value = mock_response
 
         issues = await agent.review(content)
@@ -131,8 +102,8 @@ async def test_error_agent_clean_content():
 
 
 @pytest.mark.asyncio
-async def test_error_agent_code_syntax():
-    """Test syntax error detection in code."""
+async def test_error_agent_syntax():
+    """Test syntax error detection."""
     agent = ErrorDetectionAgent()
     content = Content(
         title="Test Content",
@@ -140,22 +111,22 @@ async def test_error_agent_code_syntax():
         content_type=ContentType.CODE,
     )
 
-    mock_syntax_response = """```json
-[
-    {
-        "type": "syntax",
-        "severity": "high",
-        "description": "Missing colon after function definition",
-        "original_text": "def example()",
-        "suggested_fix": "def example():",
-        "confidence": 0.95
-    }
-]
-```"""
+    mock_response_data = AIReviewResponse(
+        issues=[
+            AIReviewIssue(
+                type="syntax",
+                severity="high",
+                description="Missing colon",
+                original_text="def example()",
+                suggested_fix="def example():",
+                confidence=0.95,
+            )
+        ]
+    )
 
-    with patch.object(agent.model, "generate_content") as mock_generate:
+    with patch.object(agent.client.models, "generate_content") as mock_generate:
         mock_response = Mock()
-        mock_response.text = mock_syntax_response
+        mock_response.text = mock_response_data.model_dump_json()
         mock_generate.return_value = mock_response
 
         issues = await agent.review(content)
