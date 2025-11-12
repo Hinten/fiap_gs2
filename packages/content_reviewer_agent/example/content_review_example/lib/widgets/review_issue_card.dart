@@ -22,7 +22,7 @@ class ReviewIssueCard extends StatelessWidget {
                 Icon(issue.typeIcon, color: issue.severityColor, size: 24),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
+                  child: SelectableText(
                     _formatIssueType(issue.issueType),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -41,7 +41,7 @@ class ReviewIssueCard extends StatelessWidget {
                   const Icon(Icons.smart_toy, size: 14, color: Colors.grey),
                   const SizedBox(width: 4),
                   Expanded(
-                    child: Text(
+                    child: SelectableText(
                       issue.reviewedByAgent!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey[600],
@@ -56,7 +56,7 @@ class ReviewIssueCard extends StatelessWidget {
             const Divider(height: 16),
 
             // Description
-            Text(
+            SelectableText(
               issue.description,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
@@ -68,7 +68,7 @@ class ReviewIssueCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.location_on, size: 16, color: Colors.grey),
                   const SizedBox(width: 4),
-                  Text(
+                  SelectableText(
                     issue.location!,
                     style: Theme.of(
                       context,
@@ -94,7 +94,7 @@ class ReviewIssueCard extends StatelessWidget {
                     const Icon(Icons.close, color: Colors.red, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
+                      child: SelectableText(
                         issue.originalText!,
                         style: const TextStyle(
                           fontFamily: 'monospace',
@@ -123,7 +123,7 @@ class ReviewIssueCard extends StatelessWidget {
                     const Icon(Icons.check, color: Colors.green, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
+                      child: SelectableText(
                         issue.suggestedFix!,
                         style: const TextStyle(
                           fontFamily: 'monospace',
@@ -144,7 +144,7 @@ class ReviewIssueCard extends StatelessWidget {
                 runSpacing: 8,
                 children: issue.sources.map((source) {
                   return Chip(
-                    label: Text(source, style: const TextStyle(fontSize: 12)),
+                    label: SelectableText(source, style: const TextStyle(fontSize: 12)),
                     avatar: const Icon(Icons.link, size: 16),
                     visualDensity: VisualDensity.compact,
                   );

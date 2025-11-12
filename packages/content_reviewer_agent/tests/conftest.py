@@ -1,6 +1,8 @@
 """Test configuration."""
 
 import pytest
+import dotenv
+dotenv.load_dotenv()
 
 
 @pytest.fixture
