@@ -11,17 +11,26 @@ Responder ao desafio FIAP GS 2025.2: **"Como a tecnologia pode tornar o trabalho
 ## 🎯 Principais Funcionalidades
 
 - **Code Review Inteligente**: Integração com GitHub API para análise automatizada de código com feedback personalizado
+- Lucas
 - **Correção Automatizada com IA**: Agentes criam metodologias, corrigem trabalhos e geram feedback para aprovação do professor
+- 
 - **Sistema de Premiação Transparente**: Metodologias objetivas e claras geradas por IA para competições e rankings
+- Leo
 - **Gerador de Conteúdo Educacional**: Criação de vídeos e materiais usando Veo3, NotebookLM, Grok e outras IAs
+- Leo
 - **Gestão de Iniciação Científica**: Sistema integrado para coordenadores administrarem grupos sem exclusões
+- Lucas
 - **Provas Gamificadas Inclusivas**: Avaliações adaptativas e acessíveis para estudantes com dislexia
+- Pedro
 - **Revisão Contínua de Conteúdo**: Agentes de IA checam fontes, corrigem erros e mantêm materiais atualizados
+- Lucas
 - **Detecção de Saúde Mental**: Monitoramento de bem-estar de alunos, professores e colaboradores com alertas precoces
-- **Detecção de Plágio**: Identificação de cópias em código e texto com análise semântica e estrutural
-- **Detecção de Uso de IA**: Identificação de uso excessivo de ChatGPT/Copilot promovendo aprendizado genuíno
+- Pedro
+- **Alerta de Plágio**: Identificação de cópias em código e texto com análise semântica e estrutural
+- **Alerta de Uso de IA**: Identificação de uso excessivo de ChatGPT/Copilot promovendo aprendizado genuíno
 - **Interface de Aprovação/Edição**: Controle humano sobre todas as ações dos agentes de IA
 - **Frontend Moderno**: Tema claro/escuro e experiência de usuário otimizada
+- Leo
 
 ## 🏗️ Arquitetura
 
