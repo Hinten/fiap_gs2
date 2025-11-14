@@ -10,27 +10,49 @@ Responder ao desafio FIAP GS 2025.2: **"Como a tecnologia pode tornar o trabalho
 
 ## 🎯 Principais Funcionalidades
 
-- **Code Review Inteligente**: Integração com GitHub API para análise automatizada de código com feedback personalizado
-- Lucas
-- **Correção Automatizada com IA**: Agentes criam metodologias, corrigem trabalhos e geram feedback para aprovação do professor
-- 
-- **Sistema de Premiação Transparente**: Metodologias objetivas e claras geradas por IA para competições e rankings
-- Leo
-- **Gerador de Conteúdo Educacional**: Criação de vídeos e materiais usando Veo3, NotebookLM, Grok e outras IAs
-- Leo
-- **Gestão de Iniciação Científica**: Sistema integrado para coordenadores administrarem grupos sem exclusões
-- Lucas
-- **Provas Gamificadas Inclusivas**: Avaliações adaptativas e acessíveis para estudantes com dislexia
-- Pedro
-- **Revisão Contínua de Conteúdo**: Agentes de IA checam fontes, corrigem erros e mantêm materiais atualizados
-- Lucas
-- **Detecção de Saúde Mental**: Monitoramento de bem-estar de alunos, professores e colaboradores com alertas precoces
-- Pedro
-- **Alerta de Plágio**: Identificação de cópias em código e texto com análise semântica e estrutural
-- **Alerta de Uso de IA**: Identificação de uso excessivo de ChatGPT/Copilot promovendo aprendizado genuíno
-- **Interface de Aprovação/Edição**: Controle humano sobre todas as ações dos agentes de IA
-- **Frontend Moderno**: Tema claro/escuro e experiência de usuário otimizada
-- Leo
+Abaixo estão as funcionalidades planejadas para o projeto, organizadas para deixar claro o que já tem responsável identificado e o que ainda precisa ser atribuído. Cada item tem uma breve descrição para facilitar o entendimento.
+
+### Funcionalidades com responsável(s) identificados
+
+- **Code Review Inteligente** — Lucas
+  - Integração com a API do GitHub para análise automatizada de PRs, comentários e feedback personalizado para alunos.
+
+- **Sistema de Premiação Transparente** — Leo
+  - Agente que gera metodologias objetivas e auditáveis para premiações, rankings e critérios de avaliação.
+
+- **Gerador de Conteúdo Educacional** — Leo
+  - Geração de vídeos e materiais didáticos usando Veo3, NotebookLM, Grok e outras IAs.
+
+- **Gestão de Iniciação Científica** — Lucas
+  - Ferramenta para coordenadores gerenciarem grupos de pesquisa, submissões e histórico, com foco em inclusão.
+
+- **Provas Gamificadas Inclusivas** — Pedro
+  - Avaliações adaptativas e acessíveis (p.ex. suporte a dislexia) com mecânicas gamificadas.
+
+- **Revisão Contínua de Conteúdo** — Lucas
+  - Agentes que checam referências, atualizam conteúdos e removem inconsistências automaticamente (com aprovação humana).
+
+- **Detecção de Saúde Mental** — Pedro
+  - Monitoramento de bem-estar de alunos e alertas precoces para equipes de suporte (respeitando privacidade e LGPD/GDPR).
+
+- **Frontend Moderno (tema claro/escuro)** — Leo
+  - Interface com suporte a temas, foco em acessibilidade e usabilidade para web e mobile.
+
+### Funcionalidades sem responsável (a atribuir)
+
+- **Correção Automatizada com IA** — (sem responsável)
+  - Agentes que aplicam rubricas, corrigem trabalhos e geram feedback para professores revisarem e aprovarem.
+
+- **Alerta de Plágio** — (sem responsável)
+  - Detecção semântica e estrutural de plágio em código e texto, com relatórios explicáveis.
+
+- **Alerta de Uso de IA** — (sem responsável)
+  - Identificação de uso excessivo de assistentes (p.ex. ChatGPT/Copilot) e sinalização para promoção de aprendizagem genuína.
+
+- **Interface de Aprovação/Edição (Human-in-the-loop)** — (sem responsável)
+  - Painel para revisão humana e aprovação final das ações dos agentes de IA (fluxo obrigatório para mudanças persistentes).
+
+---
 
 ## 🏗️ Arquitetura
 
