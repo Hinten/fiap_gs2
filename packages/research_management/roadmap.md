@@ -95,20 +95,32 @@ Sistema integrado de gestão de iniciação científica que garante que nenhum a
 - [ ] Lista de alunos sem orientador
 - [ ] Ações rápidas (atribuir orientador, arquivar projeto)
 
-### Fase 5: Interface para Alunos e Orientadores
+### Fase 5: Interface para Alunos e Orientadores (Flutter Dashboard)
+- [ ] Dashboard Flutter para coordenadores
+- [ ] Dashboard Flutter para orientadores
+- [ ] Dashboard Flutter para alunos
 - [ ] Dashboard do projeto
 - [ ] Formulário de atualização de progresso
 - [ ] Chat/comentários
 - [ ] Calendário de reuniões
 - [ ] Biblioteca de recursos (templates, guias)
 
-### Fase 6: Integração com Sistema FIAP
+### Fase 6: Dashboard Flutter (Implementação)
+- [x] Criar pacote Flutter em `packages_dashboard/research_dashboard`
+- [x] Implementar modelos de dados Dart
+- [x] Implementar serviço de comunicação com API Python
+- [x] Criar telas de dashboard para coordenador, orientador e aluno
+- [x] Implementar visualizações de métricas e gráficos
+- [x] Criar aplicativo de exemplo funcional
+- [x] Adicionar testes Flutter
+
+### Fase 7: Integração com Sistema FIAP
 - [ ] API ou RPA para sincronizar dados
 - [ ] Importar alunos e orientadores
 - [ ] Exportar relatórios
 - [ ] Single Sign-On (SSO)
 
-### Fase 7: Testes e Deploy
+### Fase 8: Testes e Deploy
 - [ ] Testes com dados reais (anonimizados)
 - [ ] Validação com coordenadores
 - [ ] Deploy serverless
