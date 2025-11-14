@@ -2,16 +2,16 @@
 Data models for Research Management System.
 """
 
+from .alert import Alert, AlertCreate, AlertSeverity, AlertStatus, AlertType
+from .member import MemberRole, ProjectMember, ProjectMemberCreate
 from .project import (
-    ResearchProject,
-    ProjectStatus,
     HealthStatus,
     ProjectCreate,
+    ProjectStatus,
     ProjectUpdate,
+    ResearchProject,
 )
-from .member import ProjectMember, MemberRole, ProjectMemberCreate
-from .update import ProjectUpdateModel, ProjectUpdateCreate
-from .alert import Alert, AlertType, AlertSeverity, AlertStatus, AlertCreate
+from .update import ProjectUpdateCreate, ProjectUpdateModel
 
 __all__ = [
     "ResearchProject",

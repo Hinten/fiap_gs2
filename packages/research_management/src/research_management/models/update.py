@@ -5,7 +5,7 @@ Project update models.
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProjectUpdateModel(BaseModel):
@@ -25,8 +25,8 @@ class ProjectUpdateModel(BaseModel):
         default_factory=datetime.utcnow, description="Submission timestamp"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "update_id": "upd-789",
                 "project_id": "proj-123",
@@ -40,6 +40,7 @@ class ProjectUpdateModel(BaseModel):
                 "timestamp": "2025-02-15T14:30:00Z",
             }
         }
+    )
 
 
 class ProjectUpdateCreate(BaseModel):

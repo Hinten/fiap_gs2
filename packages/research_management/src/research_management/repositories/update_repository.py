@@ -8,7 +8,7 @@ from typing import List, Optional
 from firebase_admin import firestore
 
 from ..firebase_admin import get_db
-from ..models.update import ProjectUpdateModel, ProjectUpdateCreate
+from ..models.update import ProjectUpdateCreate, ProjectUpdateModel
 from ..utils import generate_id
 
 

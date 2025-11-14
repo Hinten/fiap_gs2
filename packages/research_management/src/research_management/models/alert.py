@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AlertType(str, Enum):
@@ -53,8 +53,8 @@ class Alert(BaseModel):
         None, description="Alert resolution timestamp"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "alert_id": "alert-001",
                 "type": "no_advisor",
@@ -67,6 +67,7 @@ class Alert(BaseModel):
                 "resolved_at": None,
             }
         }
+    )
 
 
 class AlertCreate(BaseModel):

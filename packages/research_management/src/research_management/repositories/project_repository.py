@@ -9,11 +9,11 @@ from firebase_admin import firestore
 
 from ..firebase_admin import get_db
 from ..models.project import (
-    ResearchProject,
-    ProjectCreate,
-    ProjectUpdate,
-    ProjectStatus,
     HealthStatus,
+    ProjectCreate,
+    ProjectStatus,
+    ProjectUpdate,
+    ResearchProject,
 )
 from ..utils import generate_id
 

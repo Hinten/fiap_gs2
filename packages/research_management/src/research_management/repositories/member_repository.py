@@ -8,7 +8,7 @@ from typing import List, Optional
 from firebase_admin import firestore
 
 from ..firebase_admin import get_db
-from ..models.member import ProjectMember, ProjectMemberCreate, MemberRole
+from ..models.member import MemberRole, ProjectMember, ProjectMemberCreate
 
 
 class MemberRepository:
@@ -149,7 +149,9 @@ class MemberRepository:
         query = (
             self.db.collection(self.COLLECTION)
             .where("project_id", "==", project_id)
-            .where("role", "in", [MemberRole.ADVISOR.value, MemberRole.CO_ADVISOR.value])
+            .where(
+                "role", "in", [MemberRole.ADVISOR.value, MemberRole.CO_ADVISOR.value]
+            )
             .where("left_at", "==", None)
             .limit(1)
         )

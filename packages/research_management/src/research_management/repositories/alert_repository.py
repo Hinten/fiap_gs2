@@ -8,7 +8,7 @@ from typing import List, Optional
 from firebase_admin import firestore
 
 from ..firebase_admin import get_db
-from ..models.alert import Alert, AlertCreate, AlertType, AlertStatus, AlertSeverity
+from ..models.alert import Alert, AlertCreate, AlertSeverity, AlertStatus, AlertType
 from ..utils import generate_id
 
 

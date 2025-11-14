@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProjectStatus(str, Enum):
@@ -56,8 +56,8 @@ class ResearchProject(BaseModel):
         default_factory=datetime.utcnow, description="Last update timestamp"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "project_id": "proj-123",
                 "title": "ML for Image Classification",
@@ -71,6 +71,7 @@ class ResearchProject(BaseModel):
                 "updated_at": "2025-01-10T10:00:00Z",
             }
         }
+    )
 
 
 class ProjectCreate(BaseModel):

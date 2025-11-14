@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class MemberRole(str, Enum):
@@ -29,8 +29,8 @@ class ProjectMember(BaseModel):
     )
     left_at: Optional[datetime] = Field(None, description="When member left (if any)")
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "project_id": "proj-123",
                 "user_id": "user-456",
@@ -39,6 +39,7 @@ class ProjectMember(BaseModel):
                 "left_at": None,
             }
         }
+    )
 
 
 class ProjectMemberCreate(BaseModel):

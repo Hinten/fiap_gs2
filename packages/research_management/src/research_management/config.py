@@ -38,9 +38,10 @@ class Settings(BaseSettings):
     alert_no_update_days: int = 30  # Days before alerting about no updates
     alert_deadline_warning_days: int = 7  # Days before deadline to send warning
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = {
+        "env_file": ".env",
+        "case_sensitive": False,
+    }
 
     def get_firebase_credentials_dict(self) -> Optional[dict]:
         """
