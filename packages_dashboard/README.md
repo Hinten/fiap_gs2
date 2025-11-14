@@ -4,9 +4,23 @@ Este diretório contém todos os pacotes Flutter do projeto FIAP AI-Enhanced Lea
 
 ## 📦 Pacotes Disponíveis
 
-- **[frontend_flutter](./frontend_flutter)** - Frontend multi-plataforma principal (Web, iOS, Android)
-- **[approval_interface](./approval_interface)** - Interface unificada para aprovação e edição de ações de IA
-- **[gamified_exams](./gamified_exams)** - Sistema de provas gamificadas e inclusivas
+### ✅ Implementados e Funcionais
+
+- ✅ **[dashboard_auth](./dashboard_auth)** - Autenticação Flutter com Firebase
+  - Firebase Authentication, Multiple auth methods, Riverpod integration
+  - 4 módulos Dart com exemplo funcional
+  - [README](./dashboard_auth/README.md) | [CHANGELOG](./dashboard_auth/CHANGELOG.md)
+
+- ✅ **[approval_interface](./approval_interface)** - Interface unificada para aprovação e edição de ações de IA
+  - Dashboard genérico e reutilizável, Filtros avançados, Bulk operations
+  - Material Design 3 com tema claro/escuro
+  - 7 módulos Dart, 38 testes (18 unit + 20 widget)
+  - [README](./approval_interface/README.md) | [CHANGELOG](./approval_interface/CHANGELOG.md)
+
+### 📋 Planejados (Roadmap Disponível)
+
+- 📋 **[frontend_flutter](./frontend_flutter)** - Frontend multi-plataforma principal (Web, iOS, Android)
+- 📋 **[gamified_exams](./gamified_exams)** - Sistema de provas gamificadas e inclusivas
 
 ## 🚀 Instalação
 

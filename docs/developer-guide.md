@@ -55,20 +55,22 @@ Demonstrar como a tecnologia (especialmente IA e gamificação) pode tornar o tr
 - **R**: ggplot2, tidyverse para análises estatísticas de desempenho
 
 #### Infraestrutura Cloud (Serverless)
-- **Providers**: AWS (primário)
-- **Compute**: Lambda Functions
-- **API Gateway**: AWS API Gateway
+- **Providers**: Google Cloud Platform (primário), AWS (planejado)
+- **Compute**: Google Cloud Functions / AWS Lambda
+- **API Gateway**: Cloud Load Balancing / AWS API Gateway
+- **Authentication**: **Firebase Authentication** (Email/Password, Google Sign-In)
 - **Database**: 
-  - NoSQL: DynamoDB (eventos, logs, documentos)
-  - SQL: Aurora Serverless (dados relacionais, históricos)
-- **Storage**: S3 para vídeos, PDFs, repos clonados
-- **Messaging**: SQS (filas), SNS (notificações)
+  - **Firebase Firestore** (NoSQL - dados em tempo real, eventos, logs)
+  - Aurora Serverless (SQL - dados relacionais, históricos) - planejado
+- **Storage**: Cloud Storage / S3 para vídeos, PDFs, repos clonados
+- **Messaging**: Cloud Pub/Sub / SQS (filas), SNS (notificações)
 
 #### DevOps
-- **CI/CD**: GitHub Actions
-- **IaC**: Terraform ou Serverless Framework
+- **CI/CD**: GitHub Actions (em desenvolvimento)
+- **IaC**: Terraform ou Serverless Framework (planejado)
 - **Version Control**: Git + GitHub
 - **Testing**: pytest (Python), flutter test (Dart)
+- **Emulators**: Firebase Emulator Suite para testes locais
 
 ---
 
@@ -137,7 +139,7 @@ fiap_gs2/
 
 #### Contas Necessárias
 - GitHub (repositório)
-- AWS / GCP / Azure (infraestrutura)
+- **Firebase / Google Cloud Platform** (autenticação, database, functions)
 - OpenAI / Anthropic (para LLMs) ou usar modelos open-source
 
 ### Setup Inicial
@@ -149,32 +151,61 @@ git clone https://github.com/Hinten/fiap_gs2.git
 cd fiap_gs2
 ```
 
-#### 2. Configure Variáveis de Ambiente
+#### 2. Configure Firebase (Requerido)
+
+**Para desenvolvimento e testes locais:**
+
+```bash
+# Instalar Firebase Tools
+npm install -g firebase-tools@latest
+
+# Login no Firebase
+firebase login
+
+# Iniciar emuladores para testes locais
+firebase emulators:start --only auth,firestore
+```
+
+**Para backend (Python):**
+
+Baixe a chave de serviço do Firebase Console e configure:
+
+```bash
+# Opção 1: Variável de ambiente com caminho do arquivo
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
+
+# Opção 2: Base64 encoded (mais seguro para CI/CD)
+export FIREBASE_SERVICE_ACCOUNT_BASE64="base64_encoded_json_here"
+```
+
+**Para frontend (Flutter):**
+
+Configure o Firebase no seu app Flutter seguindo o [Firebase Quickstart](QUICKSTART-FIREBASE-AUTH.md).
+
+#### 3. Configure Variáveis de Ambiente
 
 Crie um arquivo `.env` na raiz do projeto (NÃO commitar no Git):
 
 ```bash
-# AWS Credentials (exemplo)
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-AWS_REGION=us-east-1
+# Firebase / Google Cloud
+FIREBASE_PROJECT_ID=your-project-id
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+# OU use base64 encoded:
+FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_json_here
 
-# Database
-DYNAMODB_TABLE_PREFIX=symbiowork
-AURORA_DB_ENDPOINT=your_db_endpoint
+# Firebase Emulator (para testes locais)
+FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+FIRESTORE_EMULATOR_HOST=localhost:8080
 
-# API Keys
+# API Keys para IA
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
-
-# JWT Secret
-JWT_SECRET_KEY=your_super_secret_key_change_this
 
 # Frontend
 FLUTTER_API_BASE_URL=http://localhost:8000  # ou URL de prod
 ```
 
-#### 3. Setup Backend (Python)
+#### 4. Setup Backend (Python)
 
 Para cada pacote Python, use instalação em modo editável:
 
@@ -190,8 +221,12 @@ source venv/bin/activate  # Linux/Mac
 # Instalar o pacote em modo editável com dependências de desenvolvimento
 pip install -e ".[dev]"
 
-# Rodar testes
-pytest
+# Rodar testes (com emulador Firebase)
+# Terminal 1:
+firebase emulators:start --only auth --project demo-test-project
+
+# Terminal 2:
+FIREBASE_AUTH_EMULATOR_HOST="localhost:9099" pytest
 
 # Rodar localmente (se FastAPI)
 cd src/auth_service
@@ -810,12 +845,22 @@ export AWS_DEFAULT_REGION=us-east-1
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Flutter](https://docs.flutter.dev/)
 - [CrewAI](https://docs.crewai.com/)
-- [AWS Lambda](https://docs.aws.amazon.com/lambda/)
+- [Firebase](https://firebase.google.com/docs)
+  - [Firebase Authentication](https://firebase.google.com/docs/auth)
+  - [Firebase Admin SDK (Python)](https://firebase.google.com/docs/admin/setup)
+  - [Firebase Flutter SDK](https://firebase.google.com/docs/flutter/setup)
+- [Google Cloud Functions](https://cloud.google.com/functions/docs)
 - [Terraform](https://www.terraform.io/docs)
 
+### Documentação do Projeto
+- [Firebase Integration Guide](firebase-auth-integration.md) - Guia completo de integração
+- [Firebase Quickstart](QUICKSTART-FIREBASE-AUTH.md) - Início rápido
+- [Firebase Emulator Testing](../FIREBASE_EMULATOR_TESTING.md) - Testando localmente
+- [Firebase Implementation Summary](firebase-auth-implementation-summary.md) - Resumo da implementação
+
 ### Tutoriais e Guias
-- [Building Serverless Apps with AWS](https://aws.amazon.com/serverless/)
-- [Flutter State Management](https://docs.flutter.dev/development/data-and-backend/state-mgmt)
+- [Building Serverless Apps with Google Cloud](https://cloud.google.com/serverless)
+- [Flutter State Management with Riverpod](https://riverpod.dev/)
 - [LangChain Documentation](https://python.langchain.com/)
 
 ### Comunidade

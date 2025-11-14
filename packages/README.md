@@ -4,21 +4,33 @@ Este diretório contém todos os pacotes Python do projeto FIAP AI-Enhanced Lear
 
 ## 📦 Pacotes Disponíveis
 
-### Serviços Backend
+### ✅ Implementados e Funcionais
 
-- **[auth_service](./auth_service)** - Serviço de autenticação e autorização (JWT, OAuth2, RBAC)
-- **[research_management](./research_management)** - Sistema de gestão de iniciação científica
+#### Serviços Backend
+- ✅ **[auth_service](./auth_service)** - Serviço de autenticação e autorização com Firebase
+  - Firebase Admin SDK, FastAPI middleware, RBAC, Multi-tenant
+  - 6 módulos Python, 10 testes unitários
+  - [README](./auth_service/README.md) | [CHANGELOG](./auth_service/CHANGELOG.md)
 
-### Agentes de IA
+#### Agentes de IA
+- ✅ **[content_reviewer_agent](./content_reviewer_agent)** - Agente para revisão contínua de conteúdo
+  - Fact-checking, validação de fontes, detecção de desatualização
+  - 18 módulos Python implementados
+  - [README](./content_reviewer_agent/README.md) | [Roadmap](./content_reviewer_agent/roadmap.md)
 
-- **[code_review_agent](./code_review_agent)** - Agente para análise inteligente de código via GitHub API
-- **[grading_agent](./grading_agent)** - Agente para correção automatizada com feedback personalizado
-- **[award_methodology_agent](./award_methodology_agent)** - Agente para metodologias de premiação transparentes
-- **[content_generator_agent](./content_generator_agent)** - Agente para geração de conteúdo educacional (vídeos, podcasts)
-- **[content_reviewer_agent](./content_reviewer_agent)** - Agente para revisão contínua de conteúdo
-- **[mental_health_agent](./mental_health_agent)** - Agente para monitoramento de saúde mental
-- **[plagiarism_detection_agent](./plagiarism_detection_agent)** - Agente para detecção de plágio em código e texto
-- **[ai_usage_detection_agent](./ai_usage_detection_agent)** - Agente para detecção de uso excessivo de ferramentas de IA
+### 📋 Planejados (Roadmap Disponível)
+
+#### Serviços Backend
+- 📋 **[research_management](./research_management)** - Sistema de gestão de iniciação científica
+
+#### Agentes de IA
+- 📋 **[code_review_agent](./code_review_agent)** - Agente para análise inteligente de código via GitHub API
+- 📋 **[grading_agent](./grading_agent)** - Agente para correção automatizada com feedback personalizado
+- 📋 **[award_methodology_agent](./award_methodology_agent)** - Agente para metodologias de premiação transparentes
+- 📋 **[content_generator_agent](./content_generator_agent)** - Agente para geração de conteúdo educacional (vídeos, podcasts)
+- 📋 **[mental_health_agent](./mental_health_agent)** - Agente para monitoramento de saúde mental
+- 📋 **[plagiarism_detection_agent](./plagiarism_detection_agent)** - Agente para detecção de plágio em código e texto
+- 📋 **[ai_usage_detection_agent](./ai_usage_detection_agent)** - Agente para detecção de uso excessivo de ferramentas de IA
 
 ## 🚀 Instalação
 
