@@ -16,8 +16,9 @@ class ResearchManagementService {
   })  : baseUrl = baseUrl ?? 'http://localhost:8002',
         _dio = dio ?? Dio() {
     _dio.options.baseUrl = this.baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 10);
-    _dio.options.receiveTimeout = const Duration(seconds: 30);
+    _dio.options.connectTimeout = const Duration(seconds: 30);
+    _dio.options.receiveTimeout = const Duration(seconds: 60);
+    _dio.options.sendTimeout = const Duration(seconds: 30);
     
     // Add interceptors for logging
     _dio.interceptors.add(InterceptorsWrapper(

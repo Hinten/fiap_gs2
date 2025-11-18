@@ -30,13 +30,21 @@ def initialize_firebase() -> firestore.Client:
     # Check if using emulator
     if settings.firestore_emulator_host:
         os.environ["FIRESTORE_EMULATOR_HOST"] = settings.firestore_emulator_host
-        # For emulator, use default app without credentials
+        # For emulator, initialize with minimal config
         if not firebase_admin._apps:
-            firebase_admin.initialize_app(
-                options={"projectId": settings.firebase_project_id}
-            )
+            try:
+                # Try without credentials (emulator doesn't need them)
+                firebase_admin.initialize_app(
+                    options={"projectId": settings.firebase_project_id}
+                )
+            except Exception:
+                # If that fails, try with test credentials
+                os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
+                firebase_admin.initialize_app(
+                    options={"projectId": settings.firebase_project_id}
+                )
     else:
-        # Production: use credentials
+        # Production: use real credentials
         cred_dict = settings.get_firebase_credentials_dict()
         if cred_dict:
             cred = credentials.Certificate(cred_dict)
