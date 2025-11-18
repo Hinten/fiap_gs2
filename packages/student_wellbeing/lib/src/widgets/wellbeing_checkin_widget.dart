@@ -25,6 +25,8 @@ class WellbeingCheckinWidget extends StatefulWidget {
 
   @override
   State<WellbeingCheckinWidget> createState() => _WellbeingCheckinWidgetState();
+  State<WellbeingCheckinWidget> createState() =>
+      _WellbeingCheckinWidgetState();
 }
 
 class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
@@ -166,6 +168,63 @@ class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
           ),
         ],
       ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Your Mood',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(5, (index) {
+            final level = index + 1;
+            final isSelected = _moodLevel == level;
+            return GestureDetector(
+              onTap: () => setState(() => _moodLevel = level),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Theme.of(context).primaryColor.withOpacity(0.2)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      _moodEmojis[index],
+                      style: const TextStyle(fontSize: 32),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _moodLabels[index],
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 
@@ -228,6 +287,47 @@ class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
           ),
         ],
       ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Your Stress Level',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        Slider(
+          value: _stressLevel.toDouble(),
+          min: 1,
+          max: 5,
+          divisions: 4,
+          label: _stressLabels[_stressLevel - 1],
+          activeColor: _stressColors[_stressLevel - 1],
+          onChanged: (value) => setState(() => _stressLevel = value.toInt()),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Very Low',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
+            Text(
+              _stressLabels[_stressLevel - 1],
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: _stressColors[_stressLevel - 1],
+              ),
+            ),
+            Text(
+              'Very High',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -246,6 +346,15 @@ class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
         maxLines: 3,
         onChanged: (value) => setState(() => _notes = value),
       ),
+    return TextField(
+      decoration: const InputDecoration(
+        labelText: 'Notes (optional)',
+        hintText: 'Share anything on your mind...',
+        border: OutlineInputBorder(),
+        helperText: 'Optional. Will only be stored locally with your consent.',
+      ),
+      maxLines: 3,
+      onChanged: (value) => setState(() => _notes = value),
     );
   }
 
@@ -264,6 +373,7 @@ class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
             children: [
               Icon(Icons.privacy_tip_outlined,
                   color: Colors.blue[700], size: 20),
+              Icon(Icons.info_outline, color: Colors.blue[700], size: 20),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -293,6 +403,9 @@ class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
             'Your wellbeing data is private and stored securely on your device. '
             'Check the box below only if you consent to sharing anonymized '
             'aggregate data to help improve student support services.',
+            'Your wellbeing data is private. Check the box below only if you '
+            'consent to sharing anonymized aggregate data to help improve '
+            'student support services. You can delete your data at any time.',
             style: TextStyle(fontSize: 12),
           ),
           const SizedBox(height: 8),
@@ -574,6 +687,13 @@ class _WellbeingCheckinWidgetState extends State<WellbeingCheckinWidget> {
       }
 
       if (mounted) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Check-in recorded successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
         _resetForm();
         widget.onCheckinRecorded?.call();
       }

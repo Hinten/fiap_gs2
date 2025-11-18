@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../models/alert_cluster.dart';
 import '../models/wellbeing_checkin.dart';
+import 'package:flutter/material.dart';
+
+import '../models/alert_cluster.dart';
 import '../services/wellbeing_monitoring_service.dart';
 
 /// Dashboard for viewing aggregated wellbeing alerts.
@@ -34,12 +37,18 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
   }
 
   void _loadData() {
+    _loadAlerts();
+    _subscribeToAlerts();
+  }
+
+  void _loadAlerts() {
     setState(() {
       _alerts = widget.service.getActiveAlerts();
     });
   }
 
   void _subscribeToStreams() {
+  void _subscribeToAlerts() {
     widget.service.alertsStream.listen((alerts) {
       if (mounted) {
         setState(() {
@@ -115,6 +124,7 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
         IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: _loadData,
+          onPressed: _loadAlerts,
           tooltip: 'Refresh alerts',
         ),
       ],
@@ -491,6 +501,9 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
                     size: 16,
                     color:
                         alert.percentageChange! < 0 ? Colors.red : Colors.green,
+                    color: alert.percentageChange! < 0
+                        ? Colors.red
+                        : Colors.green,
                   ),
                   const SizedBox(width: 4),
                   Text(

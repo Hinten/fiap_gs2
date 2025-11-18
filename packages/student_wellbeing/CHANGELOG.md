@@ -71,6 +71,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensured all streams emit properly on data changes
 - Fixed potential issues with old data not being purged promptly
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [0.1.0+1] - 2024-11-16
 
 ### Added
@@ -124,5 +127,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Current encryption suitable for development (production requires HSM integration)
 - No backend integration (local-only by design, apps must implement transmission)
 
-[0.1.1]: https://github.com/luxyvsc/fiap_gs2/releases/tag/student_wellbeing-v0.1.1
 [0.1.0+1]: https://github.com/luxyvsc/fiap_gs2/releases/tag/student_wellbeing-v0.1.0

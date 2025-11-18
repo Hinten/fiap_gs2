@@ -70,11 +70,15 @@ class WellbeingScore {
 
       final firstAvg = firstHalf.isEmpty
           ? 0.0
-          : firstHalf.map((c) => c.calculateScore()).reduce((a, b) => a + b) /
+          : firstHalf
+                  .map((c) => c.calculateScore())
+                  .reduce((a, b) => a + b) /
               firstHalf.length;
       final secondAvg = secondHalf.isEmpty
           ? 0.0
-          : secondHalf.map((c) => c.calculateScore()).reduce((a, b) => a + b) /
+          : secondHalf
+                  .map((c) => c.calculateScore())
+                  .reduce((a, b) => a + b) /
               secondHalf.length;
 
       trend = secondAvg - firstAvg;

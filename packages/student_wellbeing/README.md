@@ -320,6 +320,7 @@ void main() async {
 
 // Access anywhere
 final service = WellbeingServiceSingleton().service;
+// Data older than retentionDays is automatically deleted
 ```
 
 ## Consent Flow
