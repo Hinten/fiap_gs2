@@ -1,0 +1,21 @@
+name: tema_example
+description: Example application demonstrating the tema package
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Local package
+  tema:
+    path: ../
+  
+  # Required for the tema package
+  flutter_riverpod: ^3.0.3
+
+flutter:
+  uses-material-design: true

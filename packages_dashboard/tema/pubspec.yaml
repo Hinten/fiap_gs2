@@ -1,0 +1,29 @@
+name: tema
+description: Theme package with light/dark themes and provider for theme management in FIAP AI-Enhanced Learning Platform
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^3.0.3
+  riverpod: ^3.0.3
+  
+  # Storage for theme persistence
+  shared_preferences: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.25.9
+  flutter_lints: ^3.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.7
+
+flutter:
+  uses-material-design: true
