@@ -17,6 +17,14 @@ Este diretório contém todos os pacotes Flutter do projeto FIAP AI-Enhanced Lea
   - 7 módulos Dart, 38 testes (18 unit + 20 widget)
   - [README](./approval_interface/README.md) | [CHANGELOG](./approval_interface/CHANGELOG.md)
 
+- ✅ **[tema](./tema)** - Gerenciamento de temas claro/escuro com Riverpod
+  - Material Design 3 com cores modernas (roxo/teal)
+  - Detecção automática do tema do sistema
+  - Persistência de preferências do usuário
+  - Provider Riverpod 3.x para state management
+  - 16 testes unitários, exemplo funcional completo
+  - [README](./tema/README.md) | [CHANGELOG](./tema/CHANGELOG.md) | [ROADMAP](./tema/roadmap.md)
+
 ### 📋 Planejados (Roadmap Disponível)
 
 - 📋 **[frontend_flutter](./frontend_flutter)** - Frontend multi-plataforma principal (Web, iOS, Android)
