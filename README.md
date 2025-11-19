@@ -551,7 +551,7 @@ Se você já tem todos os pré-requisitos instalados:
 ```bash
 # Terminal 1: Iniciar Firebase Emulators
 cd /caminho/para/fiap_gs2
-firebase emulators:start --only auth,firestore
+firebase emulators:start
 
 # Terminal 2: Iniciar Backend
 cd production/backend
@@ -731,7 +731,7 @@ flutter run --dart-define=SKIP_AUTH=true -d <device-id>
 # Parar emulators: Ctrl+C no terminal
 
 # Reiniciar emulators
-firebase emulators:start --only
+firebase emulators:start
 
 # Limpar dados dos emulators (resetar)
 # Apenas pare e reinicie os emulators
@@ -868,7 +868,6 @@ Após conseguir rodar o MVP localmente:
    cd production/dashboard
    flutter test
    ```
-4. **Desenvolver Nova Feature**: Veja [CONTRIBUTING.md](CONTRIBUTING.md) (se existir)
 
 ---
 
@@ -1038,86 +1037,6 @@ Nosso projeto se destaca por:
    - Quick Start funcional em < 10 minutos
    - Emuladores Firebase para demo sem infra cloud
    - Interface polida e profissional
-
-### 📹 Roteiro Sugerido para Vídeo (7 minutos)
-
-**[00:00-00:30]** Introdução
-- Nome do grupo + "QUERO CONCORRER AO PÓDIO"
-- Tema: "Como IA pode humanizar o trabalho educacional"
-
-**[00:30-01:30]** Problema e Solução
-- Problema: Professores sobrecarregados, alunos precisam de suporte personalizado
-- Solução: Agentes IA como assistentes + controle humano + inclusão
-
-**[01:30-03:00]** Demo das Funcionalidades Principais
-- Gestão de IC com alertas automatizados
-- Revisão de conteúdo com IA + aprovação humana
-- Avaliações adaptativas acessíveis
-- Wellbeing monitoring
-
-**[03:00-05:00]** Integração das Disciplinas
-- Mostrar código de cada disciplina:
-  - AICSS: Agentes de IA especializados
-  - Cybersecurity: Firebase Auth + RBAC
-  - ML: Avaliações adaptativas
-  - Redes Neurais: NLP com Gemini AI
-  - Python: Backend FastAPI
-  - Cloud: Arquitetura serverless
-  - BD: Firestore real-time
-  - Social: Inclusão e ética
-
-**[05:00-06:30]** Arquitetura e Tecnologias
-- Diagrams showing: Frontend Flutter → Backend FastAPI → Firebase
-- Stack: Python 3.11, Flutter 3.35, Firebase, Google Gemini AI
-- Deployment: Serverless-ready, emuladores para dev
-
-**[06:30-07:00]** Conclusão e Impacto
-- Impacto esperado: Redução de sobrecarga docente, melhoria no engajamento estudantil
-- Próximos passos: Deploy produção, mais agentes IA
-- Agradecimentos e contatos
-
----
-
-## 👥 Equipe e Contribuições
-
-### Integrantes
-
-- **[Nome Completo 1]** - RM XXXXX - [Contribuições principais]
-- **[Nome Completo 2]** - RM XXXXX - [Contribuições principais]
-- **[Nome Completo 3]** - RM XXXXX - [Contribuições principais]
-- **[Nome Completo 4]** - RM XXXXX - [Contribuições principais] (se aplicável)
-- **[Nome Completo 5]** - RM XXXXX - [Contribuições principais] (se aplicável)
-
-### Divisão de Responsabilidades
-
-#### Backend Python
-- **Auth Service**: [Nome]
-- **Research Management**: [Nome]
-- **Content Reviewer Agent**: [Nome]
-
-#### Frontend Flutter
-- **Dashboard Integration**: [Nome]
-- **UI/UX Design**: [Nome]
-- **Firebase Integration**: [Nome]
-
-#### DevOps e Documentação
-- **Setup de Emuladores**: [Nome]
-- **Scripts de Automação**: [Nome]
-- **Documentação**: [Nome]
-
-#### Testes e Qualidade
-- **Testes Automatizados**: [Nome]
-- **Code Review**: [Nome]
-
----
-
-## 🔗 Links Importantes
-
-- **Repositório GitHub**: https://github.com/Hinten/fiap_gs2
-- **Vídeo Demonstração**: [Link YouTube não listado - a ser adicionado]
-- **Documentação Completa**: Ver pasta `docs/`
-- **Roadmaps por Package**: Ver cada `packages/*/roadmap.md`
-
 ---
 
 ## 🙏 Agradecimentos
