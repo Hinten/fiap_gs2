@@ -26,7 +26,7 @@ dependencies:
   # approval_interface: ^0.1.0
   
   # Required peer dependencies
-  flutter_riverpod: ^2.4.0
+  flutter_riverpod: ^3.0.3
   dio: ^5.3.3
   intl: ^0.18.1
 ```
@@ -164,6 +164,9 @@ await ref.read(approvalProvider.notifier).rejectItem(
 final results = await ref.read(approvalProvider.notifier).bulkApprove(
   ['id1', 'id2', 'id3'],
 );
+
+// Clear selection (selectedItemsProvider migrated para NotifierProvider)
+ref.read(selectedItemsProvider.notifier).clear();
 ```
 
 ## Backend API Requirements
@@ -255,15 +258,28 @@ See the [roadmap.md](roadmap.md) for complete API specification.
 ### Services
 - **ApprovalService**: Handles all API communications
 
-### Providers (Riverpod)
-- **approvalServiceProvider**: Provides configured service instance
-- **approvalProvider**: State management for approval items
-- **selectedItemsProvider**: Manages bulk selection state
+### Providers (Riverpod 3 Notifier API)
+- **approvalServiceProvider**: Provides configured service instance (Provider)
+- **approvalProvider**: NotifierProvider<ApprovalNotifier, ApprovalState>
+- **selectedItemsProvider**: NotifierProvider<SelectedItemsNotifier, Set<String>>
+- **approvalItemProvider**: FutureProvider.family for single item
+- **approvalHistoryProvider**: FutureProvider.autoDispose.family para histórico
 
 ### Widgets
 - **ApprovalCard**: Displays individual approval item
 - **ApprovalList**: Displays list of items with refresh and error handling
 - **ApprovalDashboardScreen**: Full-featured dashboard with statistics and filters
+
+## Riverpod 3 Migration Notes
+Esta biblioteca foi migrada da API antiga (`StateNotifierProvider` / `StateProvider`) para a nova API de `Notifier` introduzida no Riverpod 3:
+- `ApprovalNotifier` agora estende `Notifier<ApprovalState>` com método `build()`.
+- Seleção em massa usa `SelectedItemsNotifier` para melhor encapsulamento (métodos `toggle`, `clear`).
+- Continuidade: Código existente que lia `ref.read(approvalProvider.notifier).approveItem(...)` permanece válido.
+- Recomendação: Evitar setar `state` diretamente fora do Notifier; usar métodos utilitários.
+
+Próximos passos planejados (futuros):
+- Migrar loading/erro para `AsyncNotifier` ou uso de `AsyncValue<ApprovalState>`.
+- Adicionar provedores para estatísticas agregadas (`Provider<ApprovalStats>`).
 
 ## Testing
 
@@ -323,7 +339,7 @@ flutter format .
 
 ### Project Structure
 
-```
+```text
 lib/
 ├── src/
 │   ├── models/              # Data models

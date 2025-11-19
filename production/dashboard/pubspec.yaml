@@ -51,11 +51,11 @@ flutter:
   uses-material-design: true
   
   # Assets
-  assets:
-    - assets/images/
-    - assets/icons/
+#  assets:
+#    - assets/images/
+#    - assets/icons/
 
 # Override incompatible versions from path dependencies
-dependency_overrides:
-  flutter_riverpod: ^3.0.3
-  riverpod: ^3.0.3
+#dependency_overrides:
+#  flutter_riverpod: ^3.0.3
+#  riverpod: ^3.0.3

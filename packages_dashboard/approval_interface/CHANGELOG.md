@@ -5,6 +5,25 @@ All notable changes to the approval_interface package will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2025-11-19
+
+### Changed
+- Migrated state management from `StateNotifierProvider` / `StateProvider` to Riverpod 3 `NotifierProvider` API.
+- `ApprovalNotifier` now extends `Notifier<ApprovalState>` with `build()` method.
+- Replaced raw `StateProvider<Set<String>>` for selection with `SelectedItemsNotifier` (encapsulated selection logic: `toggle`, `clear`, `addAll`).
+- Updated README with migration notes and new peer dependency `flutter_riverpod: ^3.0.3`.
+
+### Added
+- Helper methods inside `SelectedItemsNotifier`.
+- Migration section in README.
+
+### Deprecated (Soft)
+- Direct external writes to `approvalProvider.notifier.state` (prefer calling exposed methods). Backwards compatible for now.
+
+### Notes
+- No breaking changes for existing consumer code calling `ref.read(approvalProvider.notifier).approveItem()` etc.
+- Future migration path planned for `AsyncNotifier` to streamline loading/error handling.
+
 ## [0.1.0] - 2024-11-11
 
 ### Added
@@ -65,4 +84,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend API endpoints required for full functionality
 - Example app includes mock data for offline testing
 
+[0.1.1]: https://github.com/Hinten/fiap_gs2/releases/tag/approval_interface-v0.1.1
 [0.1.0]: https://github.com/Hinten/fiap_gs2/releases/tag/approval_interface-v0.1.0

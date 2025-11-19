@@ -15,7 +15,7 @@ dependencies:
     path: ../
   
   # Required by approval_interface
-  flutter_riverpod: ^2.4.0
+  flutter_riverpod: ^3.0.3
   dio: ^5.3.3
   intl: ^0.18.1
   logger: ^2.0.2
