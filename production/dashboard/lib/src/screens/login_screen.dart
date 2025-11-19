@@ -35,9 +35,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       await ref.read(authServiceProvider).signInWithEmailAndPassword(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
       // Navigation will be handled by router redirect
     } on FirebaseAuthException catch (e) {
       setState(() {

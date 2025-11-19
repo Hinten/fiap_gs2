@@ -11,17 +11,17 @@ dependencies:
     sdk: flutter
   
   # State Management
-  flutter_riverpod: ^2.4.0
+  flutter_riverpod: ^3.0.3
   
   # HTTP Client
-  dio: ^5.3.3
+  dio: ^5.4.0
   
   # Routing
-  go_router: ^12.0.0
+  go_router: ^14.0.0
   
   # Firebase
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
+  firebase_core: ^4.2.1
+  firebase_auth: ^6.1.2
   
   # UI
   flutter_svg: ^2.0.9
@@ -54,3 +54,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+
+# Override incompatible versions from path dependencies
+dependency_overrides:
+  flutter_riverpod: ^3.0.3
+  riverpod: ^3.0.3

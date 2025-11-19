@@ -69,9 +69,9 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
       case 'coordinator':
         return const CoordinatorDashboardScreen();
       case 'advisor':
-        return const AdvisorDashboardScreen();
+        return const AdvisorDashboardScreen(advisorId: 'demo-advisor-id');
       case 'student':
-        return const StudentDashboardScreen();
+        return const StudentDashboardScreen(studentId: 'demo-student-id');
       default:
         return const Center(child: Text('Selecione um perfil'));
     }

@@ -56,11 +56,11 @@ final authUserProvider = FutureProvider<AuthUserModel?>((ref) async {
   
   return AuthUserModel(
     uid: user.uid,
-    email: user.email,
+    email: user.email ?? '',
     displayName: user.displayName,
     photoURL: user.photoURL,
     emailVerified: user.emailVerified,
-    role: idTokenResult.claims?['role'] as String?,
+    role: (idTokenResult.claims?['role'] as String?) ?? 'user',
     tenantId: idTokenResult.claims?['tenant_id'] as String?,
   );
 });
