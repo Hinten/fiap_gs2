@@ -40,7 +40,7 @@ class ResearchManagementService {
   /// Get coordinator dashboard metrics
   Future<CoordinatorDashboard> getCoordinatorDashboard() async {
     try {
-      final response = await _dio.get('/api/v1/dashboard/coordinator');
+      final response = await _dio.get('/api/v1/research/dashboard/coordinator');
       return CoordinatorDashboard.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       _logger.e('Failed to get coordinator dashboard', error: e);
@@ -52,7 +52,7 @@ class ResearchManagementService {
   Future<AdvisorDashboard> getAdvisorDashboard(String advisorId) async {
     try {
       final response = await _dio.get(
-        '/api/v1/dashboard/advisor',
+        '/api/v1/research/dashboard/advisor',
         queryParameters: {'advisor_id': advisorId},
       );
       return AdvisorDashboard.fromJson(response.data as Map<String, dynamic>);
@@ -66,7 +66,7 @@ class ResearchManagementService {
   Future<StudentDashboard> getStudentDashboard(String studentId) async {
     try {
       final response = await _dio.get(
-        '/api/v1/dashboard/student',
+        '/api/v1/research/dashboard/student',
         queryParameters: {'student_id': studentId},
       );
       return StudentDashboard.fromJson(response.data as Map<String, dynamic>);
@@ -92,7 +92,7 @@ class ResearchManagementService {
       if (healthStatus != null) queryParams['health_status'] = healthStatus;
 
       final response = await _dio.get(
-        '/api/v1/projects',
+        '/api/v1/research/projects',
         queryParameters: queryParams,
       );
       
@@ -108,7 +108,7 @@ class ResearchManagementService {
   /// Get project by ID
   Future<ResearchProject> getProject(String projectId) async {
     try {
-      final response = await _dio.get('/api/v1/projects/$projectId');
+      final response = await _dio.get('/api/v1/research/projects/$projectId');
       return ResearchProject.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       _logger.e('Failed to get project', error: e);
@@ -127,7 +127,7 @@ class ResearchManagementService {
       if (severity != null) queryParams['severity'] = severity;
 
       final response = await _dio.get(
-        '/api/v1/alerts',
+        '/api/v1/research/alerts',
         queryParameters: queryParams,
       );
       
@@ -143,7 +143,7 @@ class ResearchManagementService {
   /// Resolve an alert
   Future<Alert> resolveAlert(String alertId) async {
     try {
-      final response = await _dio.post('/api/v1/alerts/$alertId/resolve');
+      final response = await _dio.post('/api/v1/research/alerts/$alertId/resolve');
       return Alert.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       _logger.e('Failed to resolve alert', error: e);
@@ -154,7 +154,7 @@ class ResearchManagementService {
   /// Dismiss an alert
   Future<Alert> dismissAlert(String alertId) async {
     try {
-      final response = await _dio.post('/api/v1/alerts/$alertId/dismiss');
+      final response = await _dio.post('/api/v1/research/alerts/$alertId/dismiss');
       return Alert.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       _logger.e('Failed to dismiss alert', error: e);
