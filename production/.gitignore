@@ -1,0 +1,46 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.local
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Test coverage
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Firebase credentials
+*-credentials.json
+credentials.json
