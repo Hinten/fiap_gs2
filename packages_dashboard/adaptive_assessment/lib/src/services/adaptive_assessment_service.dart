@@ -24,6 +24,9 @@ class AdaptiveAssessmentService {
   /// Question bank for the assessment
   final List<Question> _questionBank = [];
 
+  /// Set of question IDs that have been asked to avoid repetition
+  final Set<String> _askedQuestionIds = {};
+
   /// Random number generator for question selection
   final Random _random = Random();
 
@@ -153,18 +156,41 @@ class AdaptiveAssessmentService {
   Question? getNextQuestion() {
     // Filter questions by current difficulty level
     final targetDifficulty = _currentState.currentDifficulty;
-    final availableQuestions =
-        _questionBank.where((q) => q.difficulty == targetDifficulty).toList();
+    
+    // Get questions that match difficulty and haven't been asked yet
+    final availableQuestions = _questionBank
+        .where((q) =>
+            q.difficulty == targetDifficulty &&
+            !_askedQuestionIds.contains(q.id))
+        .toList();
 
+    // If no unasked questions at this difficulty, try any unasked question
     if (availableQuestions.isEmpty) {
-      // Fallback to any question if no matches found
-      return _questionBank.isNotEmpty
-          ? _questionBank[_random.nextInt(_questionBank.length)]
-          : null;
+      final anyUnaskedQuestions = _questionBank
+          .where((q) => !_askedQuestionIds.contains(q.id))
+          .toList();
+      
+      if (anyUnaskedQuestions.isNotEmpty) {
+        final selected = anyUnaskedQuestions[_random.nextInt(anyUnaskedQuestions.length)];
+        _askedQuestionIds.add(selected.id);
+        return selected;
+      }
+      
+      // All questions have been asked, reset and start over
+      _askedQuestionIds.clear();
+      if (_questionBank.isNotEmpty) {
+        final selected = _questionBank[_random.nextInt(_questionBank.length)];
+        _askedQuestionIds.add(selected.id);
+        return selected;
+      }
+      
+      return null;
     }
 
-    // Randomly select a question from available ones
-    return availableQuestions[_random.nextInt(availableQuestions.length)];
+    // Randomly select an unasked question from available ones
+    final selected = availableQuestions[_random.nextInt(availableQuestions.length)];
+    _askedQuestionIds.add(selected.id);
+    return selected;
   }
 
   /// Submits an answer and updates the assessment state
@@ -225,6 +251,7 @@ class AdaptiveAssessmentService {
   /// Resets the assessment to initial state
   void resetAssessment() {
     _currentState = const AssessmentState();
+    _askedQuestionIds.clear();
     _stateController.add(_currentState);
   }
 
