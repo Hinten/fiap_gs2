@@ -514,7 +514,39 @@ brew install python@3.11
 # Baixe de https://www.python.org/downloads/
 ```
 
-#### 2. Flutter 3.0 ou superior
+#### 2. JDK 21 ou superior (necessário para Firebase Emulator)
+O Firebase Emulator Suite depende de componentes que executam em JVM. Sem um JDK moderno (>= 21), alguns emuladores podem falhar ao iniciar (especialmente Firestore e Auth) ou apresentar erros de compatibilidade.
+
+```bash
+# Verificar versão
+java -version  # Deve mostrar versão 21 ou superior
+
+# Instalar no Ubuntu/Debian
+sudo apt update && sudo apt install openjdk-21-jdk
+
+# Instalar no macOS (Homebrew)
+brew install openjdk@21
+sudo ln -sfn /usr/local/opt/openjdk@21/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+
+# Instalar no Windows (Winget)
+winget search Microsoft OpenJDK
+winget install --id Microsoft.OpenJDK.21 -e
+# OU baixar do site: https://learn.microsoft.com/java/openjdk/download
+
+# Definir JAVA_HOME (se necessário)
+# Linux/macOS (exemplo)
+export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+
+# Windows PowerShell (ajuste caminho conforme instalado)
+$env:JAVA_HOME = 'C:\\Program Files\\Microsoft\\jdk-21'
+
+# Validar novamente
+java -version
+```
+
+> Dica: Caso já tenha um JDK antigo (ex: 17), mantenha instalado e priorize o 21 ajustando PATH/JAVA_HOME.
+
+#### 3. Flutter 3.0 ou superior
 ```bash
 # Verificar versão
 flutter --version  # Deve ser >= 3.0
@@ -529,7 +561,7 @@ flutter config --enable-web
 flutter doctor
 ```
 
-#### 3. Firebase CLI (para emuladores)
+#### 4. Firebase CLI (para emuladores)
 ```bash
 # Instalar via npm (Node.js necessário)
 npm install -g firebase-tools
@@ -541,7 +573,7 @@ firebase --version  # Deve ser >= 12.0
 firebase login
 ```
 
-#### 4. Obter GOOGLE_API_KEY (Google AI Studio)
+#### 5. Obter GOOGLE_API_KEY (Google AI Studio)
 ```bash
 # 1. Acesse: https://aistudio.google.com/apikey
 # 2. Crie uma API Key para Google Gemini
@@ -927,16 +959,16 @@ fiap_gs2/
 ├── packages_dashboard/  # 📱 PACKAGES FLUTTER (Interfaces)
 │   ├── tema/                      # ✅ Sistema temas claro/escuro
 │   ├── dashboard_auth/            # ✅ Autenticação Firebase Flutter
-│   ├── research_dashboard/        # ✅ Dashboards IC (3 roles)
-│   ├── approval_interface/        # ✅ Interface aprovação IA
+│   ├── research_dashboard/        # ✅ Dashboards de IC
+│   ├── approval_interface/        # ✅ Interface de aprovação/edição
 │   ├── adaptive_assessment/       # ✅ Avaliações adaptativas
 │   └── student_wellbeing/         # ✅ Bem-estar estudantil
 │
 ├── docs/                # 📚 DOCUMENTAÇÃO COMPLETA
 │   ├── developer-guide.md         # Guia desenvolvimento
-│   ├── roadmap-overview.md        # Roadmap projeto
+│   ├── roadmap-overview.md        # Roadmap completo do projeto
 │   ├── discipline-mapping.md      # Integração disciplinas FIAP
-│   ├── delivery-guidelines.md     # Guia de entrega GS
+│   ├── delivery-guidelines.md     # Guia de entrega GS (616 linhas)
 │   ├── MVP_INTEGRATION_REPORT.md  # Relatório integração MVP
 │   ├── firebase-auth-*.md         # Docs Firebase Auth
 │   └── QUICKSTART-FIREBASE-AUTH.md
