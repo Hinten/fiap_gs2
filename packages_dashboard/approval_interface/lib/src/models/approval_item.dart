@@ -76,12 +76,12 @@ class ApprovalItem {
       ),
       content: json['content'] as Map<String, dynamic>?,
       assignedTo: json['assigned_to'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String),
       reviewedAt: json['reviewedAt'] != null
-          ? DateTime.parse(json['reviewedAt'] as String)
+          ? DateTime.parse(json['reviewed_at'] as String)
           : null,
       approvedAt: json['approvedAt'] != null
-          ? DateTime.parse(json['approvedAt'] as String)
+          ? DateTime.parse(json['approved_at'] as String)
           : null,
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
