@@ -562,7 +562,7 @@ Os emuladores Firebase permitem rodar Auth e Firestore localmente, sem necessida
 cat firebase.json
 
 # Iniciar emuladores (deixe este terminal aberto)
-firebase emulators:start --only auth,firestore
+firebase emulators:start
 
 # Você verá:
 # ✔  firestore: Firestore Emulator running on http://127.0.0.1:8080
@@ -707,7 +707,7 @@ flutter run --dart-define=SKIP_AUTH=true -d <device-id>
 # Parar emulators: Ctrl+C no terminal
 
 # Reiniciar emulators
-firebase emulators:start --only auth,firestore
+firebase emulators:start --only
 
 # Limpar dados dos emulators (resetar)
 # Apenas pare e reinicie os emulators
