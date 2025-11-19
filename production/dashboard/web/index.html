@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="FIAP AI-Enhanced Learning Platform - Unified Dashboard">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="FIAP Dashboard">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>FIAP AI-Enhanced Learning Platform</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Loader container */
+    #loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 9999;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+
+    #loader-container.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Logo container */
+    .logo-container {
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .logo-text {
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Title and subtitle */
+    .title-container {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 700;
+      color: white;
+      margin: 0 0 10px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* Spinner container */
+    .spinner-container {
+      animation: fadeIn 0.8s ease-out 0.4s backwards;
+    }
+
+    /* Modern spinner */
+    .spinner {
+      width: 60px;
+      height: 60px;
+      position: relative;
+    }
+
+    .spinner::before,
+    .spinner::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: white;
+      animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+
+    .spinner::before {
+      width: 60px;
+      height: 60px;
+      border-top-color: white;
+      border-right-color: white;
+    }
+
+    .spinner::after {
+      width: 45px;
+      height: 45px;
+      top: 7.5px;
+      left: 7.5px;
+      border-top-color: rgba(255, 255, 255, 0.7);
+      animation-duration: 0.8s;
+      animation-direction: reverse;
+    }
+
+    /* Loading text */
+    .loading-text {
+      margin-top: 30px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Progress bar */
+    .progress-bar-container {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      margin-top: 40px;
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease-out 0.6s backwards;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: white;
+      border-radius: 2px;
+      animation: progress 2s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+      0% {
+        width: 0%;
+        margin-left: 0%;
+      }
+      50% {
+        width: 60%;
+        margin-left: 20%;
+      }
+      100% {
+        width: 0%;
+        margin-left: 100%;
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .logo {
+        width: 100px;
+        height: 100px;
+      }
+
+      .logo-text {
+        font-size: 40px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .progress-bar-container {
+        width: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader-container">
+    <div class="logo-container">
+      <div class="logo">
+        <div class="logo-text">F</div>
+      </div>
+    </div>
+
+    <div class="title-container">
+      <h1 class="title">FIAP Learning Platform</h1>
+      <p class="subtitle">AI-Enhanced Education System</p>
+    </div>
+
+    <div class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="loading-text">Carregando...</div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    // This script is loaded before the Flutter engine is loaded.
+    // It shows the loader while Flutter is initializing.
+    
+    // Remove loader when Flutter is ready
+    window.addEventListener('flutter-first-frame', function() {
+      const loader = document.getElementById('loader-container');
+      if (loader) {
+        loader.classList.add('fade-out');
+        setTimeout(function() {
+          loader.remove();
+        }, 500);
+      }
+    });
+
+    // Fallback: Remove loader after 10 seconds if flutter-first-frame didn't fire
+    setTimeout(function() {
+      const loader = document.getElementById('loader-container');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        setTimeout(function() {
+          loader.remove();
+        }, 500);
+      }
+    }, 10000);
+  </script>
+
+  <!-- Flutter bootstrap script -->
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    var serviceWorkerVersion = {{flutter_service_worker_version}};
+  </script>
+  
+  <!-- This script adds the flutter initialization code -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

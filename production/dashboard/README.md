@@ -10,6 +10,14 @@ Dashboard Flutter unificado integrando todas as interfaces implementadas do MVP.
 2. **Dashboard Auth** - Autenticação Firebase
 3. **Research Dashboard** - Dashboards de iniciação científica
 4. **Approval Interface** - Interface de aprovação humana
+5. **Content Review** - Interface completa de revisão de conteúdo com IA
+
+## 🌐 Plataformas Suportadas
+
+- ✅ **Web** - Chrome, Firefox, Safari, Edge (com loader customizado)
+- ✅ **Android** - Versão nativa
+- ✅ **iOS** - Versão nativa
+- ✅ **Desktop** - Windows, macOS, Linux (experimental)
 
 ## 📦 Instalação
 
@@ -32,6 +40,47 @@ flutter test
 
 # Analisar código
 flutter analyze
+```
+
+## 🎯 Executando o Dashboard
+
+### Modo Rápido (Script Automático)
+
+```bash
+# Web com modo demo (sem autenticação)
+./run_dashboard.sh
+
+# Web com autenticação Firebase
+./run_dashboard.sh --with-auth
+
+# Build para produção (web)
+./run_dashboard.sh --release --web
+
+# Executar em dispositivo móvel
+./run_dashboard.sh --mobile
+
+# Ver todas as opções
+./run_dashboard.sh --help
+```
+
+### Modo Manual
+
+#### Web (Recomendado para desenvolvimento)
+```bash
+# Desenvolvimento
+flutter run -d chrome --dart-define=SKIP_AUTH=true
+
+# Build para produção
+flutter build web --release
+```
+
+#### Mobile
+```bash
+# Android
+flutter run -d <device-id> --dart-define=SKIP_AUTH=true
+
+# iOS
+flutter run -d <device-id> --dart-define=SKIP_AUTH=true
 ```
 
 ## 🎯 Modo Sem Autenticação (Emulador)
@@ -108,11 +157,21 @@ flutter devices
 flutter build web --dart-define=SKIP_AUTH=true
 ```
 
+O build web inclui:
+- ✨ **Loader animado customizado** com tema da aplicação
+- 🎨 Gradiente roxo (#667eea to #764ba2) matching o tema
+- ⚡ Animações suaves de entrada e saída
+- 📱 Design responsivo para todos os tamanhos de tela
+- 🔄 Progress bar animado e spinner dual-ring
+- 🎯 Auto-dismiss quando Flutter estiver pronto
+
+Para mais detalhes sobre o suporte web, veja [WEB_SUPPORT.md](WEB_SUPPORT.md).
+
 ## 📱 Plataformas Suportadas
 
-- ✅ Web (Chrome, Firefox, Edge)
+- ✅ Web (Chrome, Firefox, Edge, Safari) - **Com loader customizado**
 - ✅ Android
-- ✅ iOS
+- ✅ iOS  
 - ✅ Windows (desktop)
 - ✅ macOS (desktop)
 - ✅ Linux (desktop)
