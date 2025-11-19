@@ -39,6 +39,12 @@ dependencies:
     path: ../../packages_dashboard/approval_interface
   research_dashboard:
     path: ../../packages_dashboard/research_dashboard
+  
+  # New packages from PR#17
+  adaptive_assessment:
+    path: ../../packages_dashboard/adaptive_assessment
+  student_wellbeing:
+    path: ../../packages/student_wellbeing
 
 dev_dependencies:
   flutter_test:

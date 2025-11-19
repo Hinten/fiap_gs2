@@ -13,7 +13,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   
   # Charts for visualization
-  fl_chart: ^0.65.0
+  fl_chart: ^0.69.2
   
   # State management (updated to match production)
   flutter_riverpod: ^3.0.3
