@@ -180,6 +180,7 @@ As seguintes funcionalidades foram **planejadas mas não implementadas** no MVP,
 ### Diagrama de Estrutura de Pastas
 
 ```mermaid
+%%{init: {'theme':'neutral','themeVariables': { 'primaryTextColor': '#222','secondaryTextColor': '#222','tertiaryTextColor': '#222','lineColor':'#444','fontSize':'14px','fontFamily':'Inter, Arial, sans-serif'}} }%%
 graph TD
     A[fiap_gs2/] --> B[production/]
     A --> C[packages/]
@@ -212,23 +213,24 @@ graph TD
     D --> D5[adaptive_assessment ✅]
     D --> D6[student_wellbeing ✅]
 
-    style C1 fill:#90EE90
-    style C2 fill:#90EE90
-    style C3 fill:#90EE90
-    style D1 fill:#90EE90
-    style D2 fill:#90EE90
-    style D3 fill:#90EE90
-    style D4 fill:#90EE90
-    style D5 fill:#90EE90
-    style D6 fill:#90EE90
-    style C4 fill:#FFB6C1
-    style C5 fill:#FFB6C1
-    style C6 fill:#FFB6C1
+    style C1 fill:#90EE90,color:#222
+    style C2 fill:#90EE90,color:#222
+    style C3 fill:#90EE90,color:#222
+    style D1 fill:#90EE90,color:#222
+    style D2 fill:#90EE90,color:#222
+    style D3 fill:#90EE90,color:#222
+    style D4 fill:#90EE90,color:#222
+    style D5 fill:#90EE90,color:#222
+    style D6 fill:#90EE90,color:#222
+    style C4 fill:#FFB6C1,color:#222
+    style C5 fill:#FFB6C1,color:#222
+    style C6 fill:#FFB6C1,color:#222
 ```
 
 ### Diagrama de Arquitetura do Backend
 
 ```mermaid
+%%{init: {'theme':'neutral','themeVariables': { 'primaryTextColor': '#222','secondaryTextColor': '#222','tertiaryTextColor': '#222','lineColor':'#444','fontSize':'13px','fontFamily':'Inter, Arial, sans-serif'}} }%%
 graph TB
     subgraph "Frontend - Flutter Web/Mobile"
         UI[Dashboard Unificado]
@@ -268,20 +270,21 @@ graph TB
     CR --> FSDB
     AP --> FSDB
 
-    style UI fill:#E1BEE7
-    style API fill:#BBDEFB
-    style AUTH fill:#FFE082
-    style RM fill:#A5D6A7
-    style CR fill:#A5D6A7
-    style AP fill:#A5D6A7
-    style FSAUTH fill:#FFAB91
-    style FSDB fill:#FFAB91
-    style GEMINI fill:#81C784
+    style UI fill:#E1BEE7,color:#222
+    style API fill:#BBDEFB,color:#222
+    style AUTH fill:#FFE082,color:#222
+    style RM fill:#A5D6A7,color:#222
+    style CR fill:#A5D6A7,color:#222
+    style AP fill:#A5D6A7,color:#222
+    style FSAUTH fill:#FFAB91,color:#222
+    style FSDB fill:#FFAB91,color:#222
+    style GEMINI fill:#81C784,color:#222
 ```
 
 ### Fluxo de Autenticação e Autorização
 
 ```mermaid
+%%{init: {'theme':'neutral','themeVariables': { 'primaryTextColor': '#222','secondaryTextColor': '#222','tertiaryTextColor': '#222','lineColor':'#444','fontSize':'13px'}} }%%
 sequenceDiagram
     participant U as Usuário
     participant D as Dashboard Flutter
@@ -304,12 +307,13 @@ sequenceDiagram
     API-->>D: Resposta
     D-->>U: Exibir Dados
     
-    Note over D,FA: Modo SKIP_AUTH=true<br/>pula autenticação em dev
+    Note over D,FA: Modo SKIP_AUTH=true\nPula autenticação em dev
 ```
 
 ### Fluxo de Revisão de Conteúdo com IA
 
 ```mermaid
+%%{init: {'theme':'neutral','themeVariables': { 'primaryTextColor': '#222','secondaryTextColor': '#222','tertiaryTextColor': '#222','lineColor':'#444','fontSize':'13px'}} }%%
 flowchart TD
     A[Professor carrega material] --> B[Dashboard envia para API]
     B --> C[Content Reviewer Agent]
@@ -336,17 +340,18 @@ flowchart TD
     O --> L
     P --> Q[Manter Original]
 
-    style C fill:#81C784
-    style E fill:#FFE082
-    style F fill:#FFE082
-    style G fill:#FFE082
-    style H fill:#FFE082
-    style M fill:#E1BEE7
+    style C fill:#81C784,color:#222
+    style E fill:#FFE082,color:#222
+    style F fill:#FFE082,color:#222
+    style G fill:#FFE082,color:#222
+    style H fill:#FFE082,color:#222
+    style M fill:#E1BEE7,color:#222
 ```
 
 ### Diagrama de Integração com Firebase Emulator
 
 ```mermaid
+%%{init: {'theme':'neutral','themeVariables': { 'primaryTextColor': '#222','secondaryTextColor': '#222','tertiaryTextColor': '#222','lineColor':'#444','fontSize':'13px'}} }%%
 flowchart LR
     subgraph "Ambiente de Desenvolvimento"
         DEV[Máquina Dev]
@@ -374,15 +379,16 @@ flowchart LR
     FE -->|HTTP API| BE
     FE -->|Firebase Auth SDK| EMAUTH
 
-    style EMAUTH fill:#FFAB91
-    style EMDB fill:#FFAB91
-    style BE fill:#BBDEFB
-    style FE fill:#E1BEE7
+    style EMAUTH fill:#FFAB91,color:#222
+    style EMDB fill:#FFAB91,color:#222
+    style BE fill:#BBDEFB,color:#222
+    style FE fill:#E1BEE7,color:#222
 ```
 
 ### Stack Tecnológico Completo
 
 ```mermaid
+%%{init: {'theme':'neutral','themeVariables': { 'primaryTextColor': '#222','secondaryTextColor': '#222','tertiaryTextColor': '#222','fontSize':'14px'}} }%%
 mindmap
   root((FIAP AI Platform))
     Frontend
@@ -930,7 +936,7 @@ fiap_gs2/
 │   ├── developer-guide.md         # Guia desenvolvimento
 │   ├── roadmap-overview.md        # Roadmap projeto
 │   ├── discipline-mapping.md      # Integração disciplinas FIAP
-│   ├── delivery-guidelines.md     # Guia entrega GS
+│   ├── delivery-guidelines.md     # Guia de entrega GS
 │   ├── MVP_INTEGRATION_REPORT.md  # Relatório integração MVP
 │   ├── firebase-auth-*.md         # Docs Firebase Auth
 │   └── QUICKSTART-FIREBASE-AUTH.md
