@@ -8,6 +8,8 @@ class ReviewSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Card(
       elevation: 4,
       child: Padding(
@@ -98,24 +100,24 @@ class ReviewSummaryCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                    Icon(Icons.access_time, size: 16, color: theme.colorScheme.outline),
                     const SizedBox(width: 4),
                     Text(
                       _formatDateTime(result.createdAt),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    const Icon(Icons.verified, size: 16, color: Colors.grey),
+                    Icon(Icons.verified, size: 16, color: theme.colorScheme.outline),
                     const SizedBox(width: 4),
                     Text(
                       result.status.toUpperCase(),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[700],
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         fontWeight: FontWeight.bold,
                       ),
                     ),

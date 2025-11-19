@@ -94,6 +94,9 @@ sentences for better readability.
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Content Reviewer Agent'),
@@ -108,7 +111,7 @@ sentences for better readability.
           Expanded(
             flex: 1,
             child: Container(
-              color: Colors.grey[100],
+              color: isDarkMode ? theme.colorScheme.surfaceContainerHighest : Colors.grey[100],
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -203,18 +206,18 @@ sentences for better readability.
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.red[50],
-                          border: Border.all(color: Colors.red),
+                          color: theme.colorScheme.errorContainer,
+                          border: Border.all(color: theme.colorScheme.error),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.error, color: Colors.red),
+                            Icon(Icons.error, color: theme.colorScheme.error),
                             const SizedBox(width: 8),
                             Expanded(
                               child: SelectableText(
                                 _errorMessage!,
-                                style: const TextStyle(color: Colors.red),
+                                style: TextStyle(color: theme.colorScheme.onErrorContainer),
                               ),
                             ),
                           ],
@@ -231,7 +234,7 @@ sentences for better readability.
           Expanded(
             flex: 1,
             child: Container(
-              color: Colors.white,
+              color: theme.colorScheme.surface,
               child: _reviewResult == null
                   ? Center(
                       child: Column(
@@ -240,13 +243,13 @@ sentences for better readability.
                           Icon(
                             Icons.assessment,
                             size: 100,
-                            color: Colors.grey[300],
+                            color: theme.colorScheme.outline.withValues(alpha: 0.3),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'Review results will appear here',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                               fontSize: 16,
                             ),
                           ),
@@ -269,7 +272,9 @@ sentences for better readability.
                             Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.green[50],
+                                color: isDarkMode 
+                                    ? Colors.green.withValues(alpha: 0.2)
+                                    : Colors.green[50],
                                 border: Border.all(color: Colors.green),
                                 borderRadius: BorderRadius.circular(8),
                               ),

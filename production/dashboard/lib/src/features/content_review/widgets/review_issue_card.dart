@@ -8,6 +8,9 @@ class ReviewIssueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+    
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
@@ -38,13 +41,13 @@ class ReviewIssueCard extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(Icons.smart_toy, size: 14, color: Colors.grey),
+                  Icon(Icons.smart_toy, size: 14, color: theme.colorScheme.outline),
                   const SizedBox(width: 4),
                   Expanded(
                     child: SelectableText(
                       issue.reviewedByAgent!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -66,13 +69,13 @@ class ReviewIssueCard extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                  Icon(Icons.location_on, size: 16, color: theme.colorScheme.outline),
                   const SizedBox(width: 4),
                   SelectableText(
                     issue.location!,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                 ],
               ),
@@ -84,21 +87,29 @@ class ReviewIssueCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red[50],
+                  color: isDarkMode
+                      ? Colors.red.withValues(alpha: 0.2)
+                      : Colors.red[50],
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.red[200]!),
+                  border: Border.all(
+                    color: isDarkMode ? Colors.red.shade700 : Colors.red[200]!,
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.close, color: Colors.red, size: 16),
+                    Icon(
+                      Icons.close,
+                      color: isDarkMode ? Colors.red.shade300 : Colors.red,
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: SelectableText(
                         issue.originalText!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'monospace',
-                          color: Colors.red,
+                          color: isDarkMode ? Colors.red.shade300 : Colors.red,
                         ),
                       ),
                     ),
@@ -113,21 +124,29 @@ class ReviewIssueCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green[50],
+                  color: isDarkMode
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.green[50],
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.green[200]!),
+                  border: Border.all(
+                    color: isDarkMode ? Colors.green.shade700 : Colors.green[200]!,
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.check, color: Colors.green, size: 16),
+                    Icon(
+                      Icons.check,
+                      color: isDarkMode ? Colors.green.shade300 : Colors.green,
+                      size: 16,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: SelectableText(
                         issue.suggestedFix!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'monospace',
-                          color: Colors.green,
+                          color: isDarkMode ? Colors.green.shade300 : Colors.green,
                         ),
                       ),
                     ),
@@ -161,7 +180,7 @@ class ReviewIssueCard extends StatelessWidget {
                   width: 100,
                   child: LinearProgressIndicator(
                     value: issue.confidence,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       issue.confidence > 0.8
                           ? Colors.green
