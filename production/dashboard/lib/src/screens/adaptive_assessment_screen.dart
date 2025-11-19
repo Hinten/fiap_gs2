@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:adaptive_assessment/adaptive_assessment.dart';
 
 /// Screen for adaptive assessments with gamification
@@ -22,13 +23,19 @@ class _AdaptiveAssessmentScreenState
   }
 
   @override
+  void dispose() {
+    _assessmentService.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Avaliações Adaptativas'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.go('/'),
         ),
       ),
       body: Column(
@@ -59,6 +66,7 @@ class _AdaptiveAssessmentScreenState
                 constraints: const BoxConstraints(maxWidth: 800),
                 child: AdaptiveAssessmentWidget(
                   service: _assessmentService,
+                  maxQuestions: 10, // Limit to 10 questions
                   onComplete: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

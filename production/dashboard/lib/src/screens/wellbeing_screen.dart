@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:student_wellbeing/student_wellbeing.dart';
 
 /// Screen for viewing student wellbeing analytics and alerts
@@ -38,7 +39,7 @@ class _WellbeingScreenState extends ConsumerState<WellbeingScreen> {
         title: const Text('Bem-Estar Estudantil'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.go('/'),
         ),
       ),
       body: DefaultTabController(
