@@ -33,7 +33,6 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
   void initState() {
     super.initState();
     _loadData();
-    _subscribeToStreams();
   }
 
   void _loadData() {
@@ -47,7 +46,6 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
     });
   }
 
-  void _subscribeToStreams() {
   void _subscribeToAlerts() {
     widget.service.alertsStream.listen((alerts) {
       if (mounted) {
@@ -124,7 +122,6 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
         IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: _loadData,
-          onPressed: _loadAlerts,
           tooltip: 'Refresh alerts',
         ),
       ],
@@ -499,11 +496,7 @@ class _EarlyAlertDashboardState extends State<EarlyAlertDashboard> {
                         ? Icons.trending_down
                         : Icons.trending_up,
                     size: 16,
-                    color:
-                        alert.percentageChange! < 0 ? Colors.red : Colors.green,
-                    color: alert.percentageChange! < 0
-                        ? Colors.red
-                        : Colors.green,
+                    color: alert.percentageChange! < 0 ? Colors.red : Colors.green,
                   ),
                   const SizedBox(width: 4),
                   Text(
