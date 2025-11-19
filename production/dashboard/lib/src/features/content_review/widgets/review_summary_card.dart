@@ -35,7 +35,7 @@ class ReviewSummaryCard extends StatelessWidget {
             const Divider(height: 24),
 
             // Summary text
-            Text(result.summary, style: Theme.of(context).textTheme.bodyLarge),
+            SelectableText(result.summary, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 16),
 
             // Issue counts

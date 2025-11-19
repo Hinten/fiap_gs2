@@ -75,10 +75,7 @@ flutter run \
 firebase emulators:start
 
 # Executar dashboard apontando para emulador
-flutter run \
-  --dart-define=USE_EMULATOR=true \
-  --dart-define=EMULATOR_HOST=localhost \
-  -d chrome
+flutter run --dart-define=USE_EMULATOR=true --dart-define=EMULATOR_HOST=localhost --dart-define=SKIP_AUTH=true -d chrome
 ```
 
 ## 🏃 Executando
