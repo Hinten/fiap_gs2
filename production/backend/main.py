@@ -15,6 +15,9 @@ from research_management.api import (
 )
 from content_reviewer_agent.api.routes import router as content_review_router
 
+# Import mock approval API (until full implementation)
+from mock_approval_api import router as mock_approval_router
+
 # Import Firebase initialization
 from research_management.firebase_admin import initialize_firebase
 from research_management.config import get_settings
@@ -53,6 +56,7 @@ async def startup_event():
     print(f"📦 Services integrated:")
     print("   - Research Management System")
     print("   - Content Reviewer Agent")
+    print("   - Approval Interface (Mock)")
     print("   - Auth Service (shared)")
     print(f"🌐 API version: 1.0.0")
     print(f"🔥 Firebase project: {settings.firebase_project_id}")
@@ -76,6 +80,11 @@ def root():
                 "status": "active",
                 "prefix": "/api/v1/content-review",
                 "description": "AI-powered content review and validation"
+            },
+            "approval_interface": {
+                "status": "active (mock)",
+                "prefix": "/api/v1/approvals",
+                "description": "Mock approval interface for demonstration"
             }
         },
         "docs": "/docs",
@@ -91,6 +100,7 @@ def health_check():
         "services": {
             "research_management": "healthy",
             "content_reviewer": "healthy",
+            "approval_interface": "healthy (mock)",
             "firebase": "healthy"
         }
     }
@@ -105,6 +115,9 @@ app.include_router(dashboard_router, prefix="/api/v1/research", tags=["Research 
 
 # Content Reviewer Agent endpoints
 app.include_router(content_review_router, prefix="/api/v1/content-review", tags=["Content Review"])
+
+# Mock Approval Interface endpoints
+app.include_router(mock_approval_router, prefix="/api/v1", tags=["Approval Interface (Mock)"])
 
 
 if __name__ == "__main__":
