@@ -15,7 +15,7 @@ dependencies:
   dio: ^5.3.3
   
   # State Management
-  flutter_riverpod: ^2.4.0
+  flutter_riverpod: ^3.0.3
   
   # UI
   fl_chart: ^0.69.2

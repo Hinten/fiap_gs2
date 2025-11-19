@@ -7,6 +7,9 @@ export 'src/models/dashboard.dart';
 // Services
 export 'src/services/research_service.dart';
 
+// Providers
+export 'src/providers/service_providers.dart';
+
 // Widgets
 export 'src/widgets/metric_card.dart';
 export 'src/widgets/alert_card.dart';

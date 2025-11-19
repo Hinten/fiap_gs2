@@ -12,7 +12,13 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    """Application settings."""
+    """Application settings.
+
+    All environment variables are loaded from a `.env` file located in the
+    working directory (production/backend/.env when running the unified backend).
+    Extra environment variables are ignored to prevent validation errors when
+    other services add keys not used here.
+    """
 
     # Firebase Configuration
     firebase_project_id: str = os.getenv("FIREBASE_PROJECT_ID", "demo-test-project")
@@ -30,7 +36,7 @@ class Settings(BaseSettings):
     firestore_emulator_host: Optional[str] = os.getenv("FIRESTORE_EMULATOR_HOST")
 
     # API Configuration
-    api_version: str = "v1"
+    api_version: str = "v1"  # Will be overridden by API_VERSION env, if present
     api_prefix: str = "/api/v1"
 
     # Alert Configuration
@@ -38,9 +44,13 @@ class Settings(BaseSettings):
     alert_no_update_days: int = 30  # Days before alerting about no updates
     alert_deadline_warning_days: int = 7  # Days before deadline to send warning
 
+    # Runtime / Debug
+    debug: bool = False  # Maps to DEBUG env variable; prevents extra_forbidden error
+
     model_config = {
         "env_file": ".env",
         "case_sensitive": False,
+        "extra": "ignore",  # Ignore unrelated variables like GOOGLE_API_KEY
     }
 
     def get_firebase_credentials_dict(self) -> Optional[dict]:

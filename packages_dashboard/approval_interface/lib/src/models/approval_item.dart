@@ -57,6 +57,7 @@ class ApprovalItem {
 
   /// Create an ApprovalItem from JSON
   factory ApprovalItem.fromJson(Map<String, dynamic> json) {
+    print(json);
     return ApprovalItem(
       id: json['id'] as String,
       type: ApprovalType.values.firstWhere(
@@ -75,12 +76,12 @@ class ApprovalItem {
       ),
       content: json['content'] as Map<String, dynamic>?,
       assignedTo: json['assigned_to'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      reviewedAt: json['reviewed_at'] != null
-          ? DateTime.parse(json['reviewed_at'] as String)
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      reviewedAt: json['reviewedAt'] != null
+          ? DateTime.parse(json['reviewedAt'] as String)
           : null,
-      approvedAt: json['approved_at'] != null
-          ? DateTime.parse(json['approved_at'] as String)
+      approvedAt: json['approvedAt'] != null
+          ? DateTime.parse(json['approvedAt'] as String)
           : null,
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
