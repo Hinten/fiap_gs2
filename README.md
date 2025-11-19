@@ -1,4 +1,28 @@
+# FIAP - Faculdade de Informática e Administração Paulista
+
+<p align="center">
+<a href= "https://www.fiap.com.br/"><img src="assets/logo-fiap.png" alt="FIAP - Faculdade de Informática e Admnistração Paulista" border="0" width=40% height=40%></a>
+</p>
+
+<br>
+
+
 # FIAP AI-Enhanced Learning Platform - MVP Produção
+
+## Atividade em Grupo: FIAP - 1TIAOB - 2025/2 - GS2
+
+## 👨‍🎓 Integrantes: 
+- <a href="">Alice C. M. Assis - RM 566233</a>
+- <a href="">Leonardo S. Souza - RM 563928</a>
+- <a href="">Lucas B. Francelino - RM 561409</a> 
+- <a href="">Pedro L. T. Silva - RM 561644</a> 
+- <a href="">Vitor A. Bezerra - RM 563001</a>
+
+## 👩‍🏫 Professores:
+### Tutor(a) 
+- <a href="proflucas.moreira@fiap.com.br">Lucas Gomes Moreira</a>
+### Coordenador(a)
+- <a href="profandre.chiovato@fiap.com.br">André Godoi Chiovato</a>
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.35.6-02569B?logo=flutter)](https://flutter.dev)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)](https://www.python.org)
