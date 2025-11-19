@@ -1,0 +1,56 @@
+name: fiap_dashboard_unified
+description: Unified dashboard for FIAP AI-Enhanced Learning Platform MVP
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^2.4.0
+  
+  # HTTP Client
+  dio: ^5.3.3
+  
+  # Routing
+  go_router: ^12.0.0
+  
+  # Firebase
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  
+  # UI
+  flutter_svg: ^2.0.9
+  intl: ^0.18.1
+  
+  # Storage
+  shared_preferences: ^2.2.2
+  
+  # Local packages - path dependencies to implemented packages
+  tema:
+    path: ../../packages_dashboard/tema
+  dashboard_auth:
+    path: ../../packages_dashboard/dashboard_auth
+  approval_interface:
+    path: ../../packages_dashboard/approval_interface
+  research_dashboard:
+    path: ../../packages_dashboard/research_dashboard
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.7
+
+flutter:
+  uses-material-design: true
+  
+  # Assets
+  assets:
+    - assets/images/
+    - assets/icons/
