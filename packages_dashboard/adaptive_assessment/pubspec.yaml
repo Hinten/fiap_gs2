@@ -1,0 +1,30 @@
+name: adaptive_assessment
+description: Adaptive and accessible assessments with gamification for dyslexia support
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Text-to-Speech for accessibility
+  flutter_tts: ^4.0.2
+  
+  # State Management
+  flutter_riverpod: ^2.4.0
+  
+  # Utils
+  intl: ^0.18.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  flutter_lints: ^3.0.0
+  mockito: ^5.4.3
+  build_runner: ^2.4.6
+
+flutter:
+  uses-material-design: true
