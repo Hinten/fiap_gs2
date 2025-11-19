@@ -109,6 +109,20 @@ class HomeScreen extends ConsumerWidget {
                       color: Colors.orange,
                       onTap: () => context.go('/approval'),
                     ),
+                    _ServiceCard(
+                      title: 'Bem-Estar Estudantil',
+                      description: 'Monitoramento e alertas',
+                      icon: Icons.favorite,
+                      color: Colors.pink,
+                      onTap: () => context.go('/wellbeing'),
+                    ),
+                    _ServiceCard(
+                      title: 'Avaliações Adaptativas',
+                      description: 'Provas gamificadas e acessíveis',
+                      icon: Icons.quiz,
+                      color: Colors.purple,
+                      onTap: () => context.go('/adaptive-assessment'),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -147,6 +161,14 @@ class HomeScreen extends ConsumerWidget {
                         ),
                         _StatusItem(
                           title: 'Sistema de Temas',
+                          status: true,
+                        ),
+                        _StatusItem(
+                          title: 'Bem-Estar Estudantil',
+                          status: true,
+                        ),
+                        _StatusItem(
+                          title: 'Avaliações Adaptativas',
                           status: true,
                         ),
                       ],

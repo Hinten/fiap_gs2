@@ -8,6 +8,8 @@ import '../../screens/login_screen.dart';
 import '../../screens/research_screen.dart';
 import '../../screens/content_review_screen.dart';
 import '../../screens/approval_screen.dart';
+import '../../screens/wellbeing_screen.dart';
+import '../../screens/adaptive_assessment_screen.dart';
 
 /// Router provider with authentication guard
 final routerProvider = Provider<GoRouter>((ref) {
@@ -48,6 +50,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/approval',
         builder: (context, state) => const ApprovalScreen(),
+      ),
+      GoRoute(
+        path: '/wellbeing',
+        builder: (context, state) => const WellbeingScreen(),
+      ),
+      GoRoute(
+        path: '/adaptive-assessment',
+        builder: (context, state) => const AdaptiveAssessmentScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

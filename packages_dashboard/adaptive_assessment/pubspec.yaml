@@ -12,8 +12,8 @@ dependencies:
   # Text-to-Speech for accessibility
   flutter_tts: ^4.0.2
   
-  # State Management
-  flutter_riverpod: ^2.4.0
+  # State Management (updated to match production)
+  flutter_riverpod: ^3.0.3
   
   # Utils
   intl: ^0.18.1

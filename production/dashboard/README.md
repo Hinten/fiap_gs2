@@ -11,6 +11,8 @@ Dashboard Flutter unificado integrando todas as interfaces implementadas do MVP.
 3. **Research Dashboard** - Dashboards de iniciação científica
 4. **Approval Interface** - Interface de aprovação humana
 5. **Content Review** - Interface completa de revisão de conteúdo com IA
+6. **Student Wellbeing** - Monitoramento de bem-estar estudantil com alertas
+7. **Adaptive Assessment** - Avaliações adaptativas com gamificação e acessibilidade
 
 ## 🌐 Plataformas Suportadas
 
@@ -198,6 +200,14 @@ Para mais detalhes sobre o suporte web, veja [WEB_SUPPORT.md](WEB_SUPPORT.md).
   - Dashboard do aluno
 - **Revisão de Conteúdo**: Interface do agente de IA
 - **Aprovações**: Sistema de aprovação humana
+- **Bem-Estar Estudantil**: Monitoramento e alertas de saúde mental
+  - Alertas de tendências negativas
+  - Check-in de bem-estar (demo)
+  - Conformidade com LGPD/GDPR
+- **Avaliações Adaptativas**: Sistema de provas inteligentes
+  - Dificuldade adaptativa
+  - Gamificação e pontos XP
+  - Acessibilidade (texto-para-fala, alto contraste)
 
 ## 📂 Estrutura
 
@@ -218,7 +228,9 @@ production/dashboard/
 │           ├── login_screen.dart
 │           ├── research_screen.dart
 │           ├── content_review_screen.dart
-│           └── approval_screen.dart
+│           ├── approval_screen.dart
+│           ├── wellbeing_screen.dart        # NEW: Bem-estar estudantil
+│           └── adaptive_assessment_screen.dart  # NEW: Avaliações adaptativas
 ├── pubspec.yaml                     # Dependencies
 ├── README.md                        # Esta documentação
 └── run_dashboard.sh                # Script de execução
@@ -246,6 +258,8 @@ O dashboard usa **GoRouter** para navegação:
 - `/research` - Gestão de pesquisa
 - `/content-review` - Revisão de conteúdo
 - `/approval` - Interface de aprovação
+- `/wellbeing` - Bem-estar estudantil (alertas e check-ins)
+- `/adaptive-assessment` - Avaliações adaptativas com gamificação
 
 Navegação automática com guard de autenticação (quando não em modo demo).
 
@@ -320,9 +334,28 @@ Durante desenvolvimento, use hot reload:
 ### ⏳ Próximas Interfaces a Integrar
 
 - [ ] Frontend Flutter completo (landing page, etc)
-- [ ] Gamified Exams (provas gamificadas)
+- [x] Student Wellbeing (bem-estar estudantil) ✅
+- [x] Adaptive Assessment (avaliações adaptativas) ✅
 - [ ] Code Review UI (integração com GitHub)
 - [ ] Grading Dashboard (visualização de notas)
+
+### 📦 Pacotes Integrados (de PR#17)
+
+As seguintes funcionalidades foram integradas do PR#17 por luxyvsc:
+
+#### Student Wellbeing (packages/student_wellbeing)
+- Monitoramento de bem-estar estudantil com check-ins regulares
+- Detecção de alertas e tendências negativas
+- Dashboard de visualização para coordenadores/orientadores
+- Conformidade com LGPD/GDPR (anonimização e consentimento)
+- Armazenamento seguro local com flutter_secure_storage
+
+#### Adaptive Assessment (packages_dashboard/adaptive_assessment)
+- Sistema de avaliações adaptativas com dificuldade dinâmica
+- Gamificação com pontos XP e níveis
+- Recursos de acessibilidade (texto-para-fala, alto contraste, tamanhos de fonte)
+- Suporte a múltiplos tipos de questões
+- Visualização de progresso e estatísticas
 
 ## 📄 Licença
 
