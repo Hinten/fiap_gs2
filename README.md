@@ -144,7 +144,7 @@ Responder ao desafio **FIAP Global Solution 2025.2**: *"Como a tecnologia pode t
 
 #### 9. ✅ **Vídeo de Apresentação**
 - **Conteúdo**: Apresentação da ferramenta de forma didática e descontraída 
-- **Link do vídeo**: https://youtu.be/DEx2EUFrB4o
+- **Link do vídeo**: https://youtu.be/PzlZoRGiBk0
 
 ---
 
