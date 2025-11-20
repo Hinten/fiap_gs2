@@ -142,6 +142,10 @@ Responder ao desafio **FIAP Global Solution 2025.2**: *"Como a tecnologia pode t
 - **Tecnologias**: FastAPI, Flutter Web, Docker-ready
 - **Diferencial**: Deploy simplificado e manutenção centralizada
 
+#### 9. ✅ **Vídeo de Apresentação**
+- **Conteúdo**: Apresentação da ferramenta de forma didática e descontraída 
+- **Link do vídeo**: https://youtu.be/DEx2EUFrB4o
+
 ---
 
 ## ⏳ O Que Será Implementado nas Próximas Versões
